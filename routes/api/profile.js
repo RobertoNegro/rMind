@@ -13,8 +13,8 @@ router.use(bodyParser.urlencoded({
 }));
 router.use(bodyParser.json());
 
-var user = require('../models/user');
-var verifyToken = require('../mid/token');
+var user = require('../../models/user');
+var verifyToken = require('../../mid/token');
 
 // Browse Users
 router.get('/', function (req, res) {

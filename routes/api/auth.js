@@ -7,8 +7,8 @@ router.use(bodyParser.urlencoded({
 }));
 router.use(bodyParser.json());
 
-var config = require('../config');
-var user = require('../models/user');
+var config = require('../../config');
+var user = require('../../models/user');
 
 router.get('/', function (req, res) {
 	user.authenticate(req.body.email, req.body.password, function (err, token) {
