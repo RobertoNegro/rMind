@@ -1,6 +1,5 @@
 <% include header.ejs %>
 
-
 	<div id="chat_scroller">
 		<div class="floating_button" id="bottom_button" onClick="scrollToBottom()"><img src="/images/bottom_button.png"></div>
 
@@ -10,8 +9,27 @@
 				<div class="message recv">How can I help you?</div>
 				<div class="message sent">What to do this week?</div>
 				<div class="message recv">Checking..</div>
+				<div class="message recv">This is what I've found!</div>
+				
+				<div class="card">
+					<div class="top_right_buttons">
+						<img src="/images/delete_button.png" />
+						<img src="/images/settings_button.png" />
+					</div>
+					
+					<div class="when">
+						<div class="date">16 october 2017</div>
+						<div class="time">at 6.30 p.m.</div>
+					</div>
+					<canvas id="1"></canvas>					
+					<div class="meridiem">p.m.</div>
+					<div class="title">Buy a gift for Alice from Sephora</div>
+					<div class="remaining">remaining <strong>2 hours</strong> and <strong>5 minutes</strong></div>
+				</div>
+				
+				<div class="message recv">Can I do anything else?</div>
 			</div>
-			
+
 			<div id="thinking_indicators">
 				<div class="indicator"></div>
 				<div class="indicator"></div>

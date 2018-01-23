@@ -15,7 +15,7 @@ $float-button-size: 3rem;
 $indicators-size: .7rem;
 $indicators-anim-duration: .3s;
 
-@media screen and (max-width:950px) {
+@media screen and (max-width:800px) {
 	aside {
 		width: 80% !important;
 		max-width: none !important;
@@ -30,6 +30,12 @@ $indicators-anim-duration: .3s;
 	nav {
 		&.aside_open {
 			transform: translate3d(80%, 0, 0) !important;
+		}
+	}
+	
+	#chat_messages {
+		.card {
+			max-width: 80% !important;
 		}
 	}
 }
@@ -488,7 +494,7 @@ nav {
 					min-width: 60px;
 
 					border-radius: $cloud-size/8;
-					font-size: $cloud-size/4;
+
 					padding: $cloud-size/8;
 					margin: $cloud-size/8;
 					
@@ -529,6 +535,74 @@ nav {
 							background-color: #f2f2f2;
 						}
 					}
+				}
+				
+				.card {					
+					position: relative;
+				
+					text-align: center;
+					
+					max-width: 50%;
+					
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					align-content: center;
+					
+					background-color: #fff;
+
+					box-shadow: 2px 2px 6px rgba(#000, 0.2);
+					
+					padding: $cloud-size/8;
+					margin: $cloud-size/8;
+					
+					.top_right_buttons {
+						position: absolute;
+						top:$cloud-size/8;
+						right: $cloud-size/8;
+						
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						align-items: center;
+						align-content: center;
+					
+						img {						
+							height: 1rem;							
+							margin:$cloud-size/16;
+							&:hover{
+								cursor: pointer;
+							}
+						}
+					}
+					
+					.when {
+						color: #d0d0d0;
+						font-size: 0.75rem;
+					}
+					
+					canvas {
+						width: 100%;
+						min-height: 200px;
+						height: 30vmin;
+					}
+					
+					.title {
+						color: #90323d;
+						font-size: 1.2rem;
+					}
+					
+					.remaining {
+						color: #d0d0d0;
+						font-size: 0.75rem;
+						strong {
+							color: #71373f;
+							font-weight: inherit;
+						}
+						
+					}
+					
 				}
 			}
 

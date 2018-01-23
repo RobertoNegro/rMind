@@ -109,7 +109,7 @@ function sendMessage() {
 	addSendMessage($('#message_input').val());
 	// TODO: DUMMY FUNC SEND MESSAGE
 	
-	//isThinking(true);	
+	isThinking(true);	
 }
 
 $(document).ready(function () {
@@ -156,16 +156,6 @@ $(document).ready(function () {
 		refreshSendVoiceButtons();
 	});
 	refreshSendVoiceButtons();
-
-
-	setTimeout(function () {
-		isThinking(true);
-	}, 0);
-	setTimeout(function () {
-		isThinking(false);
-	}, 1000);
-	setTimeout(function () {
-		addRecvMessage("Dynamically added message");
-	}, 1000);
-
+	
+	$('canvas#1').clock(new Date(0, 0, 0, 0, 0, 0, 0));
 });
