@@ -1,0 +1,24 @@
+<% include header.ejs %>
+
+<div id="card_container">
+	<form method="POST" action="/card/photo/<%= id %>">
+		<h2>Add photo</h2>
+		<div class="input_row">
+			<label for="path">URL:</label>
+			<input id="path" type="text" name="path" placeholder="Type here the URL of the image" required/>			
+		</div>
+		<div class="input_row">
+			<label for="desc">Description:</label>
+			<input id="desc" type="text" name="desc" placeholder="Type here the description of the image" required/>
+		</div>
+		<input type="submit" value="Add photo"/>
+	</form>
+</div>
+
+<script>
+	$(document).ready(function() {
+		new SimpleBar($('#login_container')[0]);
+	});
+</script>
+	
+<% include footer.ejs %>

@@ -252,5 +252,48 @@ router.post('/signup/do', function (req, res) {
 	});
 });
 
+router.post('/card/:id', function (req, res) {
+	var id = req.params.id;
+	res.render('card', {
+		logged: true,
+		user: null,
+		turnBackButton: true,
+		id: id
+	});
+});
+
+router.post('/card/photo/:id', function (req, res) {
+	var id = req.params.id;
+
+	var body = {};
+	body['photo'] = {};
+	body['photo']['path'] = req.body.path;
+	body['photo']['desc'] = req.body.desc;
+
+	request({
+		url: constants.rMindURL + 'api/memos',
+		method: 'PUT',
+		json: true,
+		headers: {
+			'User-Agent': 'request'
+		},
+		json: body
+	}, (err, result, data) => {
+		if (err) {
+			return res.status(500).send({
+				error: true,
+				message: 'There was a problem updating the card',
+				internal: err
+			});
+		} else if (result.statusCode !== 200) {
+			return res.status(500).send({
+				error: true,
+				message: 'Card updating returned status code ' + result.statusCode
+			});
+		} else {
+			res.redirect('/');
+		}
+	});
+});
 
 module.exports = router;
