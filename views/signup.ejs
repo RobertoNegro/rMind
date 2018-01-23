@@ -1,0 +1,31 @@
+<% include header.ejs %>
+
+<div id="signup_container">
+	<form method="POST" action="/signup/do">
+		<div class="input_row">
+			<label for="username">Username:</label>
+			<input id="username" type="text" name="username" required />
+		</div>
+		<div class="input_row">
+			<label for="email">Email:</label>
+			<input id="email" type="text" name="email" required />
+		</div>
+		<div class="input_row">
+			<label for="password">Password:</label>
+			<input id="password" type="password" name="password" required />
+		</div>
+		<div class="input_row">
+			<label for="avatar">Avatar:</label>
+			<input id="avatar" type="text" name="avatar" />
+		</div>
+		<input type="submit" value="Sign up"/>
+	</form>
+</div>
+
+<script>
+	$(document).ready(function() {
+		new SimpleBar($('#signup_container')[0]);
+	});
+</script>
+	
+<% include footer.ejs %>

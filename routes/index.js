@@ -30,7 +30,8 @@ router.get('/', function (req, res, next) {
 			} else {
 				res.render('index', {
 					logged: true,
-					user: data
+					user: data,
+					turnBackButton: false
 				});
 			}
 		});
@@ -38,7 +39,8 @@ router.get('/', function (req, res, next) {
 	} else {
 		res.render('login', {
 			logged: false,
-			user: null
+			user: null,
+			turnBackButton: false
 		});
 	}
 });
@@ -73,7 +75,7 @@ router.post('/login', function (req, res) {
 	});
 });
 
-router.post('/logout', function (req, res) {
+router.get('/logout', function (req, res) {
 	res.cookie('token', '');
 	res.redirect('/');
 });
@@ -103,7 +105,8 @@ router.get('/account', function (req, res) {
 			} else {
 				res.render('account', {
 					logged: true,
-					user: data
+					user: data,
+					turnBackButton: true
 				});
 			}
 		});
@@ -116,31 +119,31 @@ router.post('/account/set', middlewares.verifyToken, function (req, res) {
 	var token = middlewares.getToken(req);
 	if (token) {
 		var username = req.body.username;
-		if(username && username.trim().length === 0)
+		if (username && username.trim().length === 0)
 			username = null;
-		
+
 		var email = req.body.email;
-		if(email && email.trim().length === 0)
+		if (email && email.trim().length === 0)
 			email = null;
-		
+
 		var password = req.body.password;
-		if(password && password.trim().length === 0)
+		if (password && password.trim().length === 0)
 			password = null;
-		
+
 		var avatar = req.body.avatar;
-		if(avatar && avatar.trim().length === 0)
+		if (avatar && avatar.trim().length === 0)
 			avatar = null;
-		
+
 		var body = {};
-		if(username)
+		if (username)
 			body['username'] = username;
-		if(email)
+		if (email)
 			body['email'] = email;
-		if(password)
+		if (password)
 			body['password'] = password;
-		if(avatar)
+		if (avatar)
 			body['avatar'] = avatar;
-		
+
 		request({
 			url: constants.rMindURL + 'api/profile',
 			method: 'PUT',
@@ -168,6 +171,71 @@ router.post('/account/set', middlewares.verifyToken, function (req, res) {
 	} else {
 		res.redirect('/');
 	}
+});
+
+
+router.get('/signup', function (req, res) {
+	res.render('signup', {
+		logged: false,
+		user: null,
+		turnBackButton: true
+	});
+});
+
+
+router.post('/signup/do', function (req, res) {
+	var username = req.body.username;
+	if (username && username.trim().length === 0)
+		username = null;
+
+	var email = req.body.email;
+	if (email && email.trim().length === 0)
+		email = null;
+
+	var password = req.body.password;
+	if (password && password.trim().length === 0)
+		password = null;
+
+	var avatar = req.body.avatar;
+	if (avatar && avatar.trim().length === 0)
+		avatar = null;
+
+	var body = {};
+	if (username)
+		body['username'] = username;
+	if (email)
+		body['email'] = email;
+	if (password)
+		body['password'] = password;
+	if (avatar)
+		body['avatar'] = avatar;
+	
+	console.log(body);
+
+	request({
+		url: constants.rMindURL + 'api/profile',
+		method: 'POST',
+		json: true,
+		headers: {
+			'User-Agent': 'request'
+		},
+		json: body
+	}, (err, result, data) => {
+		if (err) {
+			return res.status(500).send({
+				error: true,
+				message: 'There was a problem creating user',
+				internal: err
+			});
+		} else if (result.statusCode !== 200) {
+			return res.status(500).send({
+				error: true,
+				message: 'Profile creation returned status code ' + result.statusCode
+			});
+		} else {
+			res.redirect('/');
+		}
+	});
 });
 
 

@@ -101,3 +101,9 @@ function sendMessage() {
 		}
 	});
 }
+
+function about() {
+	addRecvMessage("rMind is wrote by Roberto Negro as a project for the course of Ingegneria del Software 2 in the University of Trento (y. 2017/18, n. 178932).<br/>It's powered by NodeJS and it uses MongoDB for the database section (thanks to mLab that offers a Database-as-a-service for MongoDB).<br/>It's actually hosted on Heroku, one of the most popular Platform-as-a-serice.<br/><br/>Hope you enjoy it, for any troubles or information don't hesitate to contact me at roberto.negro<span class='at'></span>studenti.unitn.it");
+	$('.at').text('@');
+	closeAside();
+}

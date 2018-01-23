@@ -403,9 +403,6 @@ nav {
 		&:hover {
 			cursor: pointer
 		}
-
-		
-		
 		height: $header-height - $header-height/6;
 		width: $header-height - $header-height/6;
 
@@ -1388,6 +1385,91 @@ nav {
 				}
 			}
 		}
+	}
+}
+
+#login_container, #account_container, #signup_container, #cardsettings_container {
+	height: 100%;
+	
+	.simplebar-content {
+		min-height: 100%;
+		display:flex;	
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+	}	
+}
+
+form {
+	width:90%;
+	max-width: 50rem;
+	background-color: #f2f2f2;
+	
+	overflow: initial !important;
+
+	color: rgba(#000, 0.6);
+	box-shadow: 1px 1px 2px rgba(#000, 0.2);
+
+	font-size: 1rem;
+
+	border-radius: $cloud-size/8;
+
+	padding: $cloud-size/8;
+	
+	.input_row {		
+		width:100%;
+		
+		display:flex;	
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		align-content: center;
+
+		label {
+			margin:0;
+			margin-top: 1rem;
+			padding:0;
+		}
+		
+		input {
+			width:100%;
+			background-color: #fff;
+
+			border: 0;
+			box-shadow: 0;
+			outline: none;
+
+			border-radius: $message-height/4;
+
+			color: #666;
+
+			font-size: $message-height/4;
+			padding: $message-height/6;
+			margin: $message-height/8;
+
+			&::placeholder {
+				color: #d6d6d6;
+				
+				font-size: $message-height/4;
+			}
+		}
+	}
+	
+	input[type=submit] {
+		display:block;
+		margin: $message-height/8 auto;
+		
+		color:#fff;
+		background-color: $header-color;
+		border: 0;
+		
+		border-radius: $message-height/4;
+		font-size: $message-height/4;
+		padding: $message-height/6;
+		
+		cursor:pointer;
+		
 	}
 }
 

@@ -36,10 +36,14 @@
 <body>
 	<nav>
 		<div id="left_button">
+		<% if(!turnBackButton) { %>
 			<img id="menu_button" onClick="openAside()" src="/images/menu_button.png" />
 			<img id="close_button" onClick="closeAside()" src="/images/close_button.png" />
+		<% } else { %>
+			<a href="/" class="nostyle"><img id="close_button" style="opacity: 1; pointer-events: auto;" src="/images/close_button.png" /></a>
+		<% } %>
 		</div>
-		<div id="logo"><img src="/images/full_logo.png" /></div>
+		<div id="logo"><a href="/" class="nostyle"><img src="/images/full_logo.png" /></a></div>
 		<div id="avatar">
 			<% if(user && user.avatar) { %>
 				<img onClick="openAside()" src="<%- user.avatar %>">
@@ -79,9 +83,7 @@
 					<a href="/logout" class="nostyle"><li><img src="/images/aside/logout.png"><div>Logout</div></li></a>				
 					</ul>
 					<hr />
-				<% } %>				
-				
-				<ul>
+					<ul>
 					<a href="#" onClick="about()" class="nostyle">
 						<li><img src="/images/aside/info.png">
 							<div>About</div>
@@ -93,6 +95,15 @@
 						</li>
 					</a>
 				</ul>
+				<% } else { %>
+				<ul>					
+					<a href="#" onClick="toggleFullscreen()" class="nostyle">
+						<li><img src="/images/aside/fullscreen.png">
+							<div>Toggle fullscreen</div>
+						</li>
+					</a>
+				</ul>
+				<% } %>				
 				<div id="spacer"></div>
 				<div id="aside_footer">
 					Copyright &copy; 2018 Roberto Negro<br/>

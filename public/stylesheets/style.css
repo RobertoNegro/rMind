@@ -889,6 +889,62 @@ nav {
             .calendar .rows .row div.bar_remaining.end:before {
               right: 50%; }
 
+#login_container, #account_container, #signup_container, #cardsettings_container {
+  height: 100%; }
+  #login_container .simplebar-content, #account_container .simplebar-content, #signup_container .simplebar-content, #cardsettings_container .simplebar-content {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center; }
+
+form {
+  width: 90%;
+  max-width: 50rem;
+  background-color: #f2f2f2;
+  overflow: initial !important;
+  color: rgba(0, 0, 0, 0.6);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem; }
+  form .input_row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center; }
+    form .input_row label {
+      margin: 0;
+      margin-top: 1rem;
+      padding: 0; }
+    form .input_row input {
+      width: 100%;
+      background-color: #fff;
+      border: 0;
+      box-shadow: 0;
+      outline: none;
+      border-radius: 1rem;
+      color: #666;
+      font-size: 1rem;
+      padding: 0.66667rem;
+      margin: 0.5rem; }
+      form .input_row input::placeholder {
+        color: #d6d6d6;
+        font-size: 1rem; }
+  form input[type=submit] {
+    display: block;
+    margin: 0.5rem auto;
+    color: #fff;
+    background-color: #90323d;
+    border: 0;
+    border-radius: 1rem;
+    font-size: 1rem;
+    padding: 0.66667rem;
+    cursor: pointer; }
+
 .gm-style-iw p {
   margin-top: 1rem !important;
   margin-bottom: 0 !important; }
