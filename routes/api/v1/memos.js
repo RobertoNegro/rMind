@@ -171,7 +171,7 @@ router.put('/:id', middlewares.verifyToken, function (req, res) {
 		update['$push']['memos.$.location'] = location;
 	if(link)
 		update['$push']['memos.$.link'] = link;	
-
+	
 	user.findOneAndUpdate({
 		'_id': tokenId,
 		'memos._id': id
