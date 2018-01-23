@@ -1014,7 +1014,7 @@ nav {
 
 				margin-top: $indicators-size;
 
-				transition: opacity .15s ease-in, height .15s linear .15s;
+				transition: none;
 
 				&.show {
 					opacity: 1;

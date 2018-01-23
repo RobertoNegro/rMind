@@ -6,9 +6,8 @@ function diffMinutes(date) {
 }
 
 function switchCard(selector, showSub) {
-
 	if (showSub) {
-		if (!$(selector + ' > .card').hasClass('hide')) {
+		if (!$(selector + ' > .card').hasClass('hide') && $(selector + ' > .subcard').length > 0) {
 			if (!$(selector + ' > .subcard').hasClass('animated') && !$(selector + ' > .card').hasClass('animated')) {
 				$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 				$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
@@ -24,8 +23,8 @@ function switchCard(selector, showSub) {
 				});
 			}
 		}
-		
-		return $(selector + ' > .card').hasClass('hide');		
+
+		return $(selector + ' > .card').hasClass('hide');
 	} else {
 		if ($(selector + ' > .subcard').hasClass('show')) {
 			if (!$(selector + ' > .subcard').hasClass('animated') && !$(selector + ' > .card').hasClass('animated')) {
@@ -42,7 +41,7 @@ function switchCard(selector, showSub) {
 					$(selector + ' > .card').toggleClass('animated', false);
 				});
 			}
-			
+
 			return !$(selector + ' > .subcard').hasClass('show');
 		}
 	}
@@ -66,7 +65,21 @@ function prevSubcard(selector) {
 	}
 }
 
-function addRecvCard(id, date, title, maps, pictures, links) {
+function addRecvCard(card) {	
+	var iteration = 0;
+	var id = card._id + '_' + iteration;
+	
+	while ($('#card_' + id).length > 0) {
+		id = id.substring(0, id.indexOf('_' + iteration));		
+		id += '_' + (++iteration);		
+	}
+
+	var date = new Date(card.date);
+	var title = card.text;
+	var maps = card.location;
+	var pictures = card.photo;
+	var links = card.link;
+
 	var diff = diffMinutes(date);
 	var code;
 
@@ -78,6 +91,8 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 		subcardCount += pictures.length;
 	if (links && links.length > 0)
 		subcardCount += links.length;
+
+	var subcard = "";
 
 	if (subcardCount > 0) {
 		subcard =
@@ -236,7 +251,7 @@ function prepareCard(selector, date) {
 					manager.stop();
 					break;
 				case 'panright':
-					if (!switchCard(selector, false)) {						
+					if (!switchCard(selector, false)) {
 						openAside();
 					}
 					manager.stop();

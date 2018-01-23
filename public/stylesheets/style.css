@@ -645,7 +645,7 @@ nav {
         justify-content: center;
         align-items: center;
         margin-top: 0.7rem;
-        transition: opacity .15s ease-in, height .15s linear .15s; }
+        transition: none; }
         #body_wrapper #chat_scroller #chat_container #thinking_indicators.show {
           opacity: 1;
           height: 2.1rem;

@@ -8,6 +8,9 @@ var sassMiddleware = require('node-sass-middleware');
 var routes = require('./config/routes');
 var constants = require('./config/constants');
 
+var debug = require('debug');
+debug.enable("rmind:*");
+
 // Database initialization
 var db = require('mongoose');
 db.connect(constants.dbUrl);
@@ -32,6 +35,7 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
+
 // --
 
 module.exports = app;
