@@ -1,0 +1,27 @@
+<% include header.ejs %>
+
+<div id="login_container">
+	<form method="POST" action="/login">
+		<div class="input_row">
+			<label for="email">Email:</label>
+			<input id="email" type="text" name="email" placeholder="Type here your e-mail address" required/>
+		</div>
+		<div class="input_row">
+			<label for="password">Password:</label>
+			<input id="password" type="password" name="password" placeholder="Type here your password" required/>
+		</div>
+		
+		<div style="text-align:center">Don't have a rMind account? <a href="/signup">Sign up here</a></div>
+		<input type="submit" value="Login"/>
+		
+
+	</form>
+</div>
+
+<script>
+	$(document).ready(function() {
+		new SimpleBar($('#login_container')[0]);
+	});
+</script>
+	
+<% include footer.ejs %>

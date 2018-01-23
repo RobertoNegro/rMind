@@ -17,15 +17,7 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 	if(!message) 
 		message = req.query.message;	
 	
-	var token = req.headers['x-access-token'];
-	if(!token)
-		token = req.query.token;
-	if(!token)
-		token = req.body.token;
-	if(!token)
-		token = req.param.token;
-	
-	token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhNTc4NzhmZTJmM2YwMDAxNDRhMGI0NSIsImlhdCI6MTUxNTc2ODAyNywiZXhwIjoxNTE1ODU0NDI3fQ.jR50iIZG6kCaxYinQu69hjouLq87BGcMRQ_HS_dB-tA';
+	var token = middlewares.getToken(req);
 	
 	var body = JSON.stringify({
 		lang: 'en',
@@ -194,7 +186,7 @@ function callDeleteAllAPI(token, memos, callback) {
 function callUpdateAllAPIrec(token, i, len, memos, text, date, callback) {
 	callUpdateAPI(token, memos[i]._id, text, date, function (error, result) {
 		if (!error) {
-			memos[i] = result;
+			memos[i] = JSON.parse(result);
 			if (i + 1 < len)
 				callUpdateAllAPIrec(token, i + 1, len, memos, text, date, callback);
 			else

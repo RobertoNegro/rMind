@@ -110,19 +110,27 @@ aside {
       aside #aside_scroller #aside_content #aside_profile {
         width: 100%;
         text-align: center; }
-        aside #aside_scroller #aside_content #aside_profile img {
-          padding: 0;
-          display: block;
-          object-fit: contain;
-          width: auto;
-          height: auto;
-          max-width: 50%;
-          max-height: 50vh;
+        aside #aside_scroller #aside_content #aside_profile #aside_avatar_container {
+          width: 50%;
           margin: auto;
-          border-radius: 50%;
+          padding: 0;
+          padding-bottom: 50%;
+          position: relative;
+          overflow: hidden;
           background-color: #fff;
-          border: 5px solid #fff;
-          overflow: hidden; }
+          border-radius: 50%; }
+          aside #aside_scroller #aside_content #aside_profile #aside_avatar_container img {
+            padding: 0;
+            margin: 0;
+            display: block;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+            border: 5px solid #fff; }
         aside #aside_scroller #aside_content #aside_profile #username {
           font-weight: bold; }
       aside #aside_scroller #aside_content hr {
@@ -229,15 +237,22 @@ nav {
     padding-top: 1rem;
     padding-bottom: 1rem; }
   nav #avatar {
-    padding-top: 0.33333rem;
-    padding-bottom: 0.33333rem; }
+    height: 3.33333rem;
+    width: 3.33333rem;
+    margin-top: 0.33333rem;
+    margin-bottom: 0.33333rem;
+    overflow: hidden;
+    border-radius: 50%;
+    background-color: #fff; }
     nav #avatar:hover {
       cursor: pointer; }
     nav #avatar img {
+      object-fit: cover;
       height: 100%;
+      width: 100%;
       background-color: #fff;
-      border: 0.2rem solid #fff;
-      border-radius: 50%; }
+      border-radius: 50%;
+      border: 0.2rem solid #fff; }
 
 #darker_overlay {
   z-index: 1001;
@@ -873,6 +888,62 @@ nav {
               background-color: #90323d; }
             .calendar .rows .row div.bar_remaining.end:before {
               right: 50%; }
+
+#login_container, #account_container, #signup_container, #cardsettings_container {
+  height: 100%; }
+  #login_container .simplebar-content, #account_container .simplebar-content, #signup_container .simplebar-content, #cardsettings_container .simplebar-content {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center; }
+
+form {
+  width: 90%;
+  max-width: 50rem;
+  background-color: #f2f2f2;
+  overflow: initial !important;
+  color: rgba(0, 0, 0, 0.6);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem; }
+  form .input_row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center; }
+    form .input_row label {
+      margin: 0;
+      margin-top: 1rem;
+      padding: 0; }
+    form .input_row input {
+      width: 100%;
+      background-color: #fff;
+      border: 0;
+      box-shadow: 0;
+      outline: none;
+      border-radius: 1rem;
+      color: #666;
+      font-size: 1rem;
+      padding: 0.66667rem;
+      margin: 0.5rem; }
+      form .input_row input::placeholder {
+        color: #d6d6d6;
+        font-size: 1rem; }
+  form input[type=submit] {
+    display: block;
+    margin: 0.5rem auto;
+    color: #fff;
+    background-color: #90323d;
+    border: 0;
+    border-radius: 1rem;
+    font-size: 1rem;
+    padding: 0.66667rem;
+    cursor: pointer; }
 
 .gm-style-iw p {
   margin-top: 1rem !important;

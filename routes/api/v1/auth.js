@@ -9,7 +9,7 @@ router.use(bodyParser.urlencoded({
 }));
 router.use(bodyParser.json());
 
-router.get('/', function (req, res) {
+router.post('/', function (req, res) {
 	user.authenticate(req.body.email, req.body.password, function (err, token) {
 		if (err)
 			return res.status(500).send({

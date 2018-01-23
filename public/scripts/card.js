@@ -100,20 +100,20 @@ function addRecvCard(card) {
 			'<div class="content_container">';
 	}
 
-	if (links && links.length > 0) {
+	if (links && Array.isArray(links) && links.length > 0) {
 		for (var i = 0, len = links.length; i < len; i++) {
 			subcard += '<div style="left: ' + (subcardCount - subcardIndex) * 10 + 'px; top: ' + (subcardCount - subcardIndex) * 5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex) * 5 + 'px" id="link_' + id + '_' + i + '" class="link"><a target="_blank" href="' + links[i].url + '">' + links[i].desc + '</a></div>';
 			subcardIndex++;
 		}
 
 	}
-	if (pictures && pictures.length > 0) {
+	if (pictures && Array.isArray(pictures) && pictures.length > 0) {
 		for (var i = 0, len = pictures.length; i < len; i++) {
 			subcard += '<div style="left: ' + (subcardCount - subcardIndex) * 10 + 'px; top: ' + (subcardCount - subcardIndex) * 5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex) * 5 + 'px" id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">' + pictures[i].desc + '</span></div>';
 			subcardIndex++;
 		}
 	}
-	if (maps && maps.length > 0) {
+	if (maps && Array.isArray(maps) && maps.length > 0) {
 		for (var i = 0, len = maps.length; i < len; i++) {
 			subcard += '<div style="left: ' + (subcardCount - subcardIndex) * 10 + 'px; top: ' + (subcardCount - subcardIndex) * 5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex) * 5 + 'px" class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">' + maps[i].desc + '</span></div>';
 			subcardIndex++;
