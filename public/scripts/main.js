@@ -36,7 +36,8 @@ $(document).ready(function () {
 	var coords = getCoordsFromAddress('Via Liguria, 1, Arzignano', function (err, location) {
 		if(err)
 			console.log(err);
-		else
+		else {
 			addRecvCard("aa", new Date(2018, 0, 9, 2, 41, 0, 0), "Dinner with colleagues", [ location ], [{ path: 'https://fimgs.net/images/secundar/o.44140.jpg', desc:'Via Trento, 12'}]);
+		}
 	});
 });

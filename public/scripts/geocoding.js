@@ -16,9 +16,13 @@ function getCoordsFromAddress(address, callback) {
 	});
 }
 
-function getAddressFromCoords(lat, lng) {
-	var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=" + GOOGLE_GEOCODING_KEY;
-	$.getJSON(url, function (data, textStatus) {
-		return data.results[0].formatted_address;
+function getAddressFromCoords(lat, lng, callback) {	
+	$.getJSON(GOOGLE_GEOCODING_URL, {
+		latlng: lat + ',' + lng,
+		key: GOOGLE_GEOCODING_KEY
+	}).done(function (data) {		
+		callback(null, data.results[0].formatted_address);
+	}).fail(function (jqxhr, textStatus, error) {
+		callback("Request Failed: " + textStatus, null);
 	});
 }
