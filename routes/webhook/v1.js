@@ -157,6 +157,7 @@ function callDeleteAPI(token, id, callback) {
 		url: removeUrl,
 		method: "DELETE",
 		headers: {
+			'Content-Type': 'application/json',
 			'x-access-token': token
 		}
 	}, function (error, response, body) {
@@ -177,7 +178,7 @@ function callDeleteAllAPIrec(token, i, len, memos, callback) {
 			if (i + 1 < len)
 				callDeleteAllAPIrec(token, i + 1, len, memos, callback);
 			else
-				callback(null, memos);
+				callback(null, JSON.stringify(memos));
 		} else 
 			callback(error, null);
 	});
@@ -187,7 +188,7 @@ function callDeleteAllAPI(token, memos, callback) {
 	if(memos && memos.length > 0)
 		callDeleteAllAPIrec(token, 0, memos.length, memos, callback);
 	else 
-		callback(null, []);
+		callback(null, JSON.stringify([]));
 }
 
 function callUpdateAllAPIrec(token, i, len, memos, text, date, callback) {
@@ -197,7 +198,7 @@ function callUpdateAllAPIrec(token, i, len, memos, text, date, callback) {
 			if (i + 1 < len)
 				callUpdateAllAPIrec(token, i + 1, len, memos, text, date, callback);
 			else
-				callback(null, memos);
+				callback(null, JSON.stringify(memos));
 		} else 
 			callback(error, null);
 	});
@@ -207,10 +208,12 @@ function callUpdateAllAPI(token, memos, text, date, callback) {
 	if(memos && memos.length > 0)
 		callUpdateAllAPIrec(token, 0, memos.length, memos, text, date, callback);
 	else 
-		callback(null, []);
+		callback(null, JSON.stringify([]));
 }
 
 router.post('/', function (req, res) {
+	res.setHeader('Content-Type', 'application/json');
+	
 	var contexts = req.body.result.contexts;
 
 	var token = null;
@@ -242,6 +245,7 @@ router.post('/', function (req, res) {
 			callCreateAPI(token, parameters['name'], parameters['date-time'], function (error, result) {
 				if (!error) {
 					var text = 'Done!';
+					
 					return res.status(200).send({
 						'speech': text,
 						'displayText': text,

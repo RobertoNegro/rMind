@@ -11,25 +11,69 @@ router.use(bodyParser.urlencoded({
 }));
 router.use(bodyParser.json());
 
+function getDate(dateS) {	
+	if (dateS.indexOf('/') >= 0)
+		dateS = dateS.substring(0, dateS.indexOf('/'));
+
+	if (dateS.indexOf('-') < 0) {
+		var today = new Date();
+		var month = today.getMonth() + 1;
+		var day = today.getDate();
+		dateS = today.getFullYear() + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day) + 'T' + dateS + 'Z';
+	}
+	
+	console.log("getDate [dateS]: "+ dateS);
+
+	var date = new Date(dateS);
+	if (dateS.indexOf('T') < 0)
+		date.setHours(12);
+
+	return date;
+}
+
+function getRangedDate(dateS) {
+	var date1, date2;
+	
+	if (dateS.indexOf('/') >= 0) {
+		// range di date
+		date1 = getDate(dateS.substring(0, dateS.indexOf('/')));
+		date2 = getDate(dateS.substring(dateS.indexOf('/') + 1));
+		
+		date2.setHours(date2.getHours() + 24);
+	} else if(dateS.indexOf('T') >= 0) {
+		// orario definito
+		date1 = getDate(dateS);
+		date2 = getDate(dateS);
+		
+		date1.setHours(date1.getHours() - 1);
+		date2.setHours(date2.getHours() + 1);
+	} else {
+		// giorno definito
+		date1 = getDate(dateS);
+		date2 = getDate(dateS);
+		
+		date2.setDate(date2.getDate() + 1);
+		date2.setHours(0,0,0,0);
+	}
+	
+	return {
+		start: date1,
+		end: date2
+	};
+}
+
 // CREATE
 router.post('/', middlewares.verifyToken, function (req, res) {
 	console.log("Creating memo");
-	
+
 	var dateS = req.body.date;
-	
-	if(dateS.indexOf('/') >= 0)
-		dateS = dateS.substring(0, dateS.indexOf('/'));
-	
-	var date = new Date(dateS);
-	
-	if(dateS.indexOf('T') < 0)
-		date.setHours(12);
-	
+	var date = getDate(dateS);
+
 	var memo = {
 		date: date,
 		text: req.body.text
 	};
-	
+
 	user.findByIdAndUpdate(req.userId, {
 		$push: {
 			memos: memo
@@ -75,50 +119,25 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 				message: "No user found."
 			});
 		}
-		
+
 		var memos = u.memos;
-		if(req.body.text) {
-			for(var i = 0; i < memos.length; i++) {
-				if(memos[i].text.toLowerCase().indexOf(req.body.text.trim().toLowerCase()) < 0) {
+		if (req.body.text) {
+			for (var i = 0; i < memos.length; i++) {
+				if (memos[i].text.toLowerCase().indexOf(req.body.text.trim().toLowerCase()) < 0) {
 					memos.splice(i--, 1);
 				}
 			}
 		}
-		
-		if(req.body.date) {
+
+		if (req.body.date) {
 			var dateS = req.body.date;
-			
-			if(dateS.indexOf('T') > 0) {
-				var date = new Date(dateS);
-				for(var i = 0; i < memos.length; i++) {
-					if(memos[i].date.getFullYear() === date.getFullYear() && 
-    				memos[i].date.getMonth() === date.getMonth() && 
-    				memos[i].date.getDate() === date.getDate() && 
-						memos[i].date.getHours() >= (date.getHours() > 0 ? date.getHours() - 1 : 0) && 
-						memos[i].date.getHours() <= (date.getHours() < 23 ? date.getHours() + 1 : 23)) {
-						// its ok
-					} else 						
-						memos.splice(i--, 1);
-				}
-			} else if(dateS.indexOf('/') > 0) {
-				var dateStart = new Date(dateS.substring(0, dateS.indexOf('/')));
-				var dateEnd = new Date(dateS.substring(dateS.indexOf('/')+1));
-				dateEnd.setHours(dateEnd.getHours() + 24);
-				
-				for(var i = 0; i < memos.length; i++) {
-					if(memos[i].date < dateStart || memos[i].date > dateEnd)				
-						memos.splice(i--, 1);
-				}
-			} else {
-				var dateStart = new Date(dateS);
-				var dateEnd = new Date(dateS);
-				dateEnd.setHours(dateEnd.getHours() + 24);
-				
-				for(var i = 0; i < memos.length; i++) {
-					if(memos[i].date < dateStart || memos[i].date > dateEnd)				
-						memos.splice(i--, 1);
-				}
-			}						
+			var range = getRangedDate(dateS);
+			var date = new Date(dateS);
+
+			for (var i = 0; i < memos.length; i++) {
+				if (memos[i].date < range.start || memos[i].date > range.end)
+					memos.splice(i--, 1);
+			}
 		}
 
 		res.status(200).send(memos);
@@ -130,22 +149,16 @@ router.put('/:id', middlewares.verifyToken, function (req, res) {
 	var tokenId = req.userId;
 	var id = req.params.id;
 
-	var date = req.body.date;
+	var dateS = req.body.date;
 	var text = req.body.text;
 
 	var update = {};
 	update['$set'] = {};
-
-	if (date)
-		update['$set']['memos.$.date'] = new Date(date);
+	if (dateS) 
+		update['$set']['memos.$.date'] = getDate(dateS);
 	if (text)
 		update['$set']['memos.$.text'] = text;
 
-	debug('[UPDATING MEMO]');
-	debug('id: ');
-	debug(id);
-	debug('update: ');
-	debug(update);
 
 	user.findOneAndUpdate({
 		'_id': tokenId,
@@ -180,10 +193,14 @@ router.delete('/:id', middlewares.verifyToken, function (req, res) {
 	user.findOneAndUpdate({
 		'_id': tokenId,
 	}, {
-		$pull: { memos: { _id: id } }
+		$pull: {
+			memos: {
+				_id: id
+			}
+		}
 	}, {
 		new: true
-	}, function(err, u) {
+	}, function (err, u) {
 		if (err) {
 			debug(err);
 			return res.status(500).send({

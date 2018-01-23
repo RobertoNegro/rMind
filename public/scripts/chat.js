@@ -66,25 +66,38 @@ function sendMessage() {
 
 	autosize.update($('#message_input').get(0));
 	addSendMessage(text.replace(/\r/g, '').replace(/\n/g, '<br/>'));
-	
+
 	waitingResponses++;
 	isThinking(true);
 
-	var url = "../webhook?message="+text;
+	var url = "../webhook?message=" + text;
 	$.get({
 		url: url,
-		success: function (result, status) {
-			addRecvMessage(result.result.fulfillment.speech);
-			var cards = JSON.parse(result.result.fulfillment.data);
-			if(cards && cards.length > 0) 
-				for(var i = 0, len = cards.length; i < len; i++)
-					addRecvCard(cards[i]);
-			
-			waitingResponses--;
-			if(waitingResponses <= 0) {
+		success: function (result, status) {						
+			waitingResponses--;			
+			if (waitingResponses <= 0) {
 				isThinking(false);
 				waitingResponses = 0;
 			}
+			
+			if (result.result.fulfillment.data) {
+				var cards = JSON.parse(result.result.fulfillment.data);
+				if(cards) {
+					if(Array.isArray(cards)) {
+						if(cards.length > 0)
+							for (var i = 0, len = cards.length; i < len; i++)
+								addRecvCard(cards[i]);
+					}
+					else {
+						if(cards._id)
+							addRecvCard(cards);
+					}
+				}
+			}			
+			
+			if(result.result.fulfillment.speech)
+				addRecvMessage(result.result.fulfillment.speech);
+
 		}
 	});
 }
