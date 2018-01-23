@@ -1,11 +1,10 @@
 @media screen and (max-width: 800px) {
   aside {
-    width: 80% !important;
-    left: -80% !important; }
-  body.aside_open {
-    left: 80% !important; }
+    width: 80% !important; }
+  #body_wrapper.aside_open {
+    transform: translate3d(80%, 0, 0) !important; }
   nav.aside_open {
-    left: 80% !important; } }
+    transform: translate3d(80%, 0, 0) !important; } }
 
 @keyframes indicatorsAnim {
   0% {
@@ -28,11 +27,7 @@ body {
   background-repeat: repeat;
   background-size: 5rem 5rem;
   font-family: 'Roboto', sans-serif;
-  padding-top: 4rem;
-  transition: left 0.3s ease-in; }
-  body.aside_open {
-    left: 35%;
-    transition: left 0.3s ease-out; }
+  padding-top: 4rem; }
 
 a.nostyle, a.nostyle:visited, a.nostyle:hover, a.nostyle:active, a.nostyle:focus, a.nostyle:active:hover {
   text-decoration: none;
@@ -48,18 +43,19 @@ aside {
   position: fixed;
   top: 0;
   bottom: 0;
+  left: 0;
   width: 35%;
-  left: -35%;
   padding-top: 4rem;
   padding-bottom: 4rem;
-  transition: width 0.3s ease-in, left 0.3s ease-in, visibility 0s linear 0.3s;
   background-color: #553034;
-  color: #fff; }
+  color: #fff;
+  transition: width 0.3s ease-in, transform 0.3s ease-in, visibility 0s linear 0.3s;
+  transform: translate3d(-100%, 0, 0); }
   aside.aside_open {
     visibility: visible;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    transition: width 0.3s ease-out, left 0.3s ease-out;
-    left: 0 !important; }
+    transition: width 0.3s ease-out, transform 0.3s ease-out;
+    transform: translate3d(0, 0, 0); }
   aside #aside_profile #avatar {
     width: 50%;
     height: auto;
@@ -119,6 +115,7 @@ nav {
   top: 0;
   left: 0;
   width: 100%;
+  transform: translate3d(0, 0, 0);
   background-color: #90323d;
   height: 4rem;
   display: flex;
@@ -129,11 +126,11 @@ nav {
   align-content: center;
   padding-left: 1.33333rem;
   padding-right: 0.25rem;
-  transition: left 0.3s ease-in;
+  transition: transform 0.3s ease-in;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
   nav.aside_open {
-    left: 35%;
-    transition: left 0.3s ease-out; }
+    transform: translate3d(35%, 0, 0);
+    transition: transform 0.3s ease-out; }
     nav.aside_open div,
     nav.aside_open img {
       transition: opacity 0.3s ease-out; }
@@ -207,7 +204,12 @@ nav {
   width: 100%;
   overflow: hidden;
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.3s ease-in; }
+  #body_wrapper.aside_open {
+    transform: translate3d(35%, 0, 0);
+    transition: transform 0.3s ease-out; }
   #body_wrapper #chat_scroller {
     position: relative;
     overflow: hidden;
@@ -234,10 +236,10 @@ nav {
       #body_wrapper #chat_scroller .floating_button img {
         height: 100%; }
       #body_wrapper #chat_scroller .floating_button#bottom_button {
-        top: 2.5rem;
+        bottom: 2.5rem;
         right: 2.5rem; }
         #body_wrapper #chat_scroller .floating_button#bottom_button.show {
-          margin-top: -1.5rem;
+          margin-bottom: -1.5rem;
           margin-right: -1.5rem; }
       #body_wrapper #chat_scroller .floating_button.show {
         width: 3rem;
@@ -312,6 +314,7 @@ nav {
           #body_wrapper #chat_scroller #chat_container #thinking_indicators .indicator:nth-child(3) {
             animation-delay: -0.4s; }
   #body_wrapper #message_container {
+    position: relative;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -342,11 +345,29 @@ nav {
       #body_wrapper #message_container textarea::placeholder {
         color: #d6d6d6;
         font-size: 1rem; }
-    #body_wrapper #message_container #send_button {
-      height: 1.33333rem;
-      margin-left: 1.33333rem;
-      margin-right: 1.33333rem; }
-      #body_wrapper #message_container #send_button:hover {
-        cursor: pointer; }
+    #body_wrapper #message_container #message_button {
+      position: relative;
+      height: 4rem;
+      width: 4rem; }
+      #body_wrapper #message_container #message_button div {
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        position: absolute;
+        margin: auto;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s ease-in;
+        padding: 1.33333rem; }
+        #body_wrapper #message_container #message_button div.show {
+          pointer-events: auto;
+          opacity: 1;
+          transition: opacity 0.15s ease-out; }
+        #body_wrapper #message_container #message_button div img {
+          width: 1.33333rem;
+          height: 1.33333rem; }
+        #body_wrapper #message_container #message_button div:hover {
+          cursor: pointer; }
 
 /*# sourceMappingURL=style.css.map */

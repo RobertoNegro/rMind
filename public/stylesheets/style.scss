@@ -18,18 +18,17 @@ $indicators-anim-duration: .6s;
 @media screen and (max-width:800px) {
 	aside {
 		width: 80% !important;
-		left: -80% !important;
 	}
 
-	body {
+	#body_wrapper {
 		&.aside_open {
-			left: 80% !important;
+			transform: translate3d(80%, 0, 0) !important;
 		}
 	}
 
 	nav {
 		&.aside_open {
-			left: 80% !important;
+			transform: translate3d(80%, 0, 0) !important;
 		}
 	}
 }
@@ -63,13 +62,6 @@ body {
 	font-family: 'Roboto', sans-serif;
 
 	padding-top: $header-height;
-
-	transition: left 0.3s ease-in;
-
-	&.aside_open {
-		left: 35%;
-		transition: left 0.3s ease-out;
-	}
 }
 
 a {
@@ -97,25 +89,26 @@ aside {
 	position: fixed;
 	top: 0;
 	bottom: 0;
+	left: 0;
 
 	width: 35%;
-	left: -35%;
 
 	padding-top: $header-height;
 	padding-bottom: $header-height;
 
-	transition: width 0.3s ease-in, left 0.3s ease-in, visibility 0s linear 0.3s;
-
 	background-color: $aside-color;
 	color: #fff;
+
+	transition: width 0.3s ease-in, transform 0.3s ease-in, visibility 0s linear 0.3s;
+	transform: translate3d(-100%, 0, 0);
 
 	&.aside_open {
 		visibility: visible;
 
 		box-shadow: 0 0 5px rgba(#000, 0.3);
 
-		transition: width 0.3s ease-out, left 0.3s ease-out;
-		left: 0 !important;
+		transition: width 0.3s ease-out, transform 0.3s ease-out;
+		transform: translate3d(0, 0, 0);
 	}
 
 	#aside_profile {
@@ -203,8 +196,8 @@ aside {
 nav {
 	z-index: 1002;
 	&.aside_open {
-		left: 35%;
-		transition: left 0.3s ease-out;
+		transform: translate3d(35%, 0, 0);
+		transition: transform 0.3s ease-out;
 
 		div,
 		img {
@@ -234,6 +227,10 @@ nav {
 	left: 0;
 	width: 100%;
 
+	transform: translate3d(0,
+	0,
+	0);
+
 	background-color: $header-color;
 	height: $header-height;
 
@@ -247,7 +244,7 @@ nav {
 	padding-left: $header-height/3;
 	padding-right: $header-height/16;
 
-	transition: left 0.3s ease-in;
+	transition: transform 0.3s ease-in;
 
 	box-shadow: 0 0 5px rgba(#000,
 	0.3);
@@ -291,12 +288,14 @@ nav {
 	}
 
 	#avatar {
-		&:hover {cursor: pointer}
-		
+		&:hover {
+			cursor: pointer
+		}
+
 		padding-top: $header-height/12;
 		padding-bottom: $header-height/12;
-		
-		
+
+
 		img {
 			background-color: #fff;
 			border: 0.2rem solid #fff;
@@ -339,6 +338,14 @@ nav {
 	display: flex;
 	flex-direction: column;
 
+	transform: translate3d(0, 0, 0);
+	transition: transform 0.3s ease-in;
+
+	&.aside_open {
+		transform: translate3d(35%, 0, 0);
+		transition: transform 0.3s ease-out;
+	}
+
 	#chat_scroller {
 		position: relative;
 		overflow: hidden;
@@ -349,54 +356,53 @@ nav {
 		.floating_button {
 			position: absolute;
 			z-index: 999;
-			
+
 			width: 0;
 			height: 0;
 			padding: 0;
 			margin: 0;
-			
+
 			transition: width 0.25s ease-in, height 0.25s ease-in, padding 0.25s ease-in, margin 0.25s ease-in;
-			
+
 			background-color: #f2f2f2;
 			border-radius: 50%;
-			
+
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
 			align-content: center;
-			
+
 			box-shadow: 2px 2px 4px rgba(#000, 0.2);
-			
+
 			&:hover {
 				cursor: pointer;
 			}
-			
+
 			img {
 				height: 100%;
 			}
 
 			&#bottom_button {
-				top: $cloud-size/4 + $float-button-size/2;
+				bottom: $cloud-size/4 + $float-button-size/2;
 				right: $cloud-size/4 + $float-button-size/2;
-			
-				
-				&.show{
-					margin-top: -$float-button-size/2;
+
+				&.show {
+					margin-bottom: -$float-button-size/2;
 					margin-right: -$float-button-size/2;
 				}
 			}
-			
-			&.show{
+
+			&.show {
 				width: $float-button-size;
-				height: $float-button-size;			
+				height: $float-button-size;
 				padding: $float-button-size/4;
-				
+
 				transition: width 0.25s ease-out, height 0.25s ease-out, padding 0.25s ease-out, margin 0.25s ease-out;
-			
+
 			}
 		}
-		
+
 
 
 		#chat_container {
@@ -510,6 +516,8 @@ nav {
 	}
 
 	#message_container {
+		position: relative;
+
 		display: flex;
 		flex-direction: row;
 
@@ -556,13 +564,38 @@ nav {
 			}
 		}
 
-		#send_button {
-			height: $message-height/3;
-			margin-left: $message-height/3;
-			margin-right: $message-height/3;
+		#message_button {
+			position: relative;
+			height: $message-height;
+			width: $message-height;
 
-			&:hover {
-				cursor: pointer;
+			div {
+				top: 0;
+				left: 0;
+				bottom: 0;
+				right: 0;
+				position: absolute;
+				margin: auto;
+								
+				pointer-events: none;
+				opacity: 0;
+				transition: opacity 0.15s ease-in;
+				
+				&.show {
+				pointer-events: auto;
+					opacity: 1;
+					transition: opacity 0.15s ease-out;
+				}
+				
+				padding: $message-height/3;
+				img {
+					width: $message-height/3;
+					height: $message-height/3;
+				}
+
+				&:hover {
+					cursor: pointer;
+				}
 			}
 		}
 	}
