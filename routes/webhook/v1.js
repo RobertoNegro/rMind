@@ -17,7 +17,7 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 	var body = JSON.stringify({
 		lang: 'en',
 		query: message,
-		sessionId: req.headers['x-access-token']
+		sessionId: req.userId
 	});
 
 	var options = {
@@ -29,7 +29,8 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 
 		headers: {
 			'Authorization': 'Bearer 1ada4d47f80f47c4a8c0bce82e75dbb6',
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'x-access-token': req.headers['x-access-token']
 		},
 
 		body: body
@@ -46,28 +47,24 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 	request(options, callback);
 });
 
-router.post('/', function (req, res) {
-	jwt.verify(req.body.sessionId, constants.tokenSecret, function(err, decoded) {
-    if (err) 
-    	return res.status(500).send({ error: true, message: 'Failed to authenticate token.' });
+router.post('/', middlewares.verifyToken, function (req, res) {
+	
+	var userId = decoded.id;
+	var action = req.body.result.action;
+	var parameters = req.body.result.parameters;
 
-    var userId = decoded.id;
-		var action = req.body.result.action;
-		var parameters = req.body.result.parameters;
-		
-		console.log("User ID: ");
-		console.log(userId);
-		console.log("Action: ");    
-		console.log(action);
-		console.log("Parameters: ");
-		console.log(parameters);
-		
-		var text = 'this is a reply for '+userId;
-		res.status(200).send({
-			'speech': text,
-			'displayText': text
-		});
-  });
+	console.log("User ID: ");
+	console.log(userId);
+	console.log("Action: ");    
+	console.log(action);
+	console.log("Parameters: ");
+	console.log(parameters);
+
+	var text = 'this is a reply for '+userId;
+	res.status(200).send({
+		'speech': text,
+		'displayText': text
+	});
 });
 
 module.exports = router;
