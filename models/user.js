@@ -1,14 +1,11 @@
 var mongoose = require('mongoose');
 require('mongoose-double')(mongoose);
-
+var schemaTypes = mongoose.Schema.Types;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+var config = require('../config/constants');
 
-var config = require('../config');
-
-var schemaTypes = mongoose.Schema.Types;
-
-
+// schemas
 var linkSchema = new mongoose.Schema({
 	url: String,
 	desc: String
@@ -58,7 +55,9 @@ var userSchema = new mongoose.Schema({
 
 	memos: [memoSchema]
 });
+// --
 
+// static functions
 function hash(password, callback) {
 	if (!password)
 		return callback(new Error("No password passed as argument"), null);
@@ -71,9 +70,7 @@ function hash(password, callback) {
 	});
 }
 
-userSchema.statics.hash = hash;
-
-userSchema.statics.signup = function (email, username, password, callback) {
+function signup(email, username, password, callback) {
 	email = email.toLowerCase();
 
 	hash(password, function (err, hashedPassword) {
@@ -96,7 +93,7 @@ userSchema.statics.signup = function (email, username, password, callback) {
 	});
 }
 
-userSchema.statics.authenticate = function (email, password, callback) {
+function authenticate(email, password, callback) {
 	email = email.toLowerCase();
 
 	user.findOne({
@@ -113,7 +110,7 @@ userSchema.statics.authenticate = function (email, password, callback) {
 			if (result === true) {
 				var token = jwt.sign({
 					id: u._id
-				}, config.secret, {
+				}, constants.tokenSecret, {
 					expiresIn: 86400
 				});
 
@@ -129,6 +126,11 @@ userSchema.statics.authenticate = function (email, password, callback) {
 		});
 	});
 }
+
+userSchema.statics.hash = hash;
+userSchema.statics.signup = signup;
+userSchema.statics.authenticate = authenticate;
+// --
 
 var user = mongoose.model('User', userSchema);
 module.exports = user;
