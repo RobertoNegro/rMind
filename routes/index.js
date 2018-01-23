@@ -16,16 +16,11 @@ router.get('/', function (req, res, next) {
 				'x-access-token': token
 			}
 		}, (err, result, data) => {
-			if (err) {
-				return res.status(500).send({
-					error: true,
-					message: 'There was a problem acquiring user information',
-					internal: err
-				});
-			} else if (result.statusCode !== 200) {
-				return res.status(500).send({
-					error: true,
-					message: 'Profile infos returned status code ' + result.statusCode
+			if (err || result.statusCode !== 200) {
+				res.render('login', {
+					logged: false,
+					user: null,
+					turnBackButton: false
 				});
 			} else {
 				res.render('index', {
@@ -35,7 +30,6 @@ router.get('/', function (req, res, next) {
 				});
 			}
 		});
-
 	} else {
 		res.render('login', {
 			logged: false,
@@ -57,17 +51,8 @@ router.post('/login', function (req, res) {
 			'password': req.body.password
 		}
 	}, (err, result, data) => {
-		if (err) {
-			return res.status(500).send({
-				error: true,
-				message: 'There was a problem during the login.',
-				internal: err
-			});
-		} else if (result.statusCode !== 200) {
-			return res.status(500).send({
-				error: true,
-				message: 'Login returned status code ' + result.statusCode
-			});
+		if (err || result.statusCode !== 200) {
+			res.redirect('/?err');
 		} else {
 			res.cookie('token', data.token);
 			res.redirect('/');
@@ -114,6 +99,38 @@ router.get('/account', function (req, res) {
 		res.redirect('/');
 	}
 });
+
+router.get('/account/delete', middlewares.verifyToken, function (req, res) {
+	var token = middlewares.getToken(req);
+	if (token) {
+		request({
+			url: constants.rMindURL + 'api/profile',
+			method: 'DELETE',
+			headers: {
+				'User-Agent': 'request',
+				'x-access-token': token
+			}
+		}, (err, result, data) => {
+			if (err) {
+				return res.status(500).send({
+					error: true,
+					message: 'There was a problem deleting user',
+					internal: err
+				});
+			} else if (result.statusCode !== 200) {
+				return res.status(500).send({
+					error: true,
+					message: 'Profile deleting returned status code ' + result.statusCode
+				});
+			} else {
+				res.redirect('/');
+			}
+		});
+	} else {
+		res.redirect('/');
+	}
+});
+
 
 router.post('/account/set', middlewares.verifyToken, function (req, res) {
 	var token = middlewares.getToken(req);
@@ -173,7 +190,6 @@ router.post('/account/set', middlewares.verifyToken, function (req, res) {
 	}
 });
 
-
 router.get('/signup', function (req, res) {
 	res.render('signup', {
 		logged: false,
@@ -209,8 +225,6 @@ router.post('/signup/do', function (req, res) {
 		body['password'] = password;
 	if (avatar)
 		body['avatar'] = avatar;
-	
-	console.log(body);
 
 	request({
 		url: constants.rMindURL + 'api/profile',

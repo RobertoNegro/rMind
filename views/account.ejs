@@ -1,25 +1,26 @@
 <% include header.ejs %>
 
 <div id="account_container">
-<form autocomplete="off" method="POST" action="/account/set">
-	<div class="input_row">
-		<label for="username">Username:</label>
-		<input id="username" type="text" name="username" placeholder="Type here your username" value="<%- user.username %>"/>
-	</div>
-	<div class="input_row">
-		<label for="email">Email:</label>
-		<input id="email" type="text" name="email" placeholder="Type here your e-mail address" value="<%- user.email %>"/>
-	</div>
-	<div class="input_row">
-		<label for="password">Password:</label>
-		<input id="password" type="password" name="password" placeholder="Type here your password" value=""/>
-	</div>
-	<div class="input_row">
-		<label for="avatar">Avatar:</label>
-		<input id="avatar" type="text" name="avatar" placeholder="Type here your avatar" value="<%- user.avatar %>"/>
-	</div>
-	<input type="submit" value="Salva modifiche"/>
-</form>
+	<form autocomplete="off" method="POST" action="/account/set">
+		<div class="input_row">
+			<label for="username">Username:</label>
+			<input id="username" type="text" name="username" placeholder="Type here your username" value="<%- user.username %>"/>
+		</div>
+		<div class="input_row">
+			<label for="email">Email:</label>
+			<input id="email" type="text" name="email" placeholder="Type here your e-mail address" value="<%- user.email %>"/>
+		</div>
+		<div class="input_row">
+			<label for="password">Password:</label>
+			<input id="password" type="password" name="password" placeholder="Type here your password" value=""/>
+		</div>
+		<div class="input_row">
+			<label for="avatar">Avatar:</label>
+			<input id="avatar" type="text" name="avatar" placeholder="Type here your avatar" value="<%- user.avatar %>"/>
+		</div>
+		<input type="submit" value="Salva modifiche"/>
+	<div style="text-align:center"><a href="/account/delete">Delete account</a></div>
+	</form>
 </div>
 
 <script>
