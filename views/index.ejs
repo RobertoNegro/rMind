@@ -5,10 +5,13 @@
 		<div class="floating_button" id="bottom_button" onClick="scrollToBottom()"><img src="/images/bottom_button.png"></div>
 
 		<div id="chat_container">
-			<div class="message recv">Welcome to rMind!</div>
-			<div class="message recv">How can I help you?</div>
-			<div class="message sent">What to do this week?</div>
-			<div class="message recv">Checking..</div>
+			<div id="chat_messages">
+				<div class="message recv">Welcome to rMind!</div>
+				<div class="message recv">How can I help you?</div>
+				<div class="message sent">What to do this week?</div>
+				<div class="message recv">Checking..</div>
+			</div>
+			
 			<div id="thinking_indicators">
 				<div class="indicator"></div>
 				<div class="indicator"></div>
@@ -20,7 +23,7 @@
 	<div id="message_container">
 		<textarea class='autoExpand' id="message_input" placeholder="Scrivi un messaggio" rows='1'></textarea>
 		<div id="message_button">
-			<div id="send_button"><img src="/images/send_button.png" /></div>
+			<div id="send_button" onClick="sendMessage()"><img src="/images/send_button.png" /></div>
 			<div id="voice_button"><img src="/images/voice_button.png" /></div>
 		</div>
 	</div>
