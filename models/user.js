@@ -3,7 +3,7 @@ require('mongoose-double')(mongoose);
 var schemaTypes = mongoose.Schema.Types;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-var config = require('../config/constants');
+var constants = require('../config/constants');
 
 // schemas
 var linkSchema = new mongoose.Schema({
