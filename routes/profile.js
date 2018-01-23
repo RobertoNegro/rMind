@@ -268,11 +268,11 @@ router.post('/', function (req, res) {
 
 					rimraf(dir, function (err) {
 						if (err && err.code != 'ENOENT')
-								return res.status(500).send({
-									error: true,
-									message: "There was a problem removing previous directory.",
-									internal: err.message
-								});
+							return res.status(500).send({
+								error: true,
+								message: "There was a problem removing previous directory.",
+								internal: err.message
+							});
 
 						mkdirp(dir, function (err) {
 							if (err)
@@ -347,8 +347,18 @@ router.delete('/', verifyToken, function (req, res) {
 			});
 		}
 
-		return res.status(200).send({
-			error: false
+		var dir = __dirname + '/../public/users/' + req.userId;
+		rimraf(dir, function (err) {
+			if (err && err.code != 'ENOENT')
+				return res.status(500).send({
+					error: true,
+					message: "There was a problem removing previous directory.",
+					internal: err.message
+				});
+
+			return res.status(200).send({
+				error: false
+			});
 		});
 	});
 });
