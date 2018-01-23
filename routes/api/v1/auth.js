@@ -1,7 +1,7 @@
 var express = require('express');
 
 var bodyParser = require('body-parser');
-var user = require('../../models/user');
+var user = require('../../../models/user');
 
 var router = express.Router();
 router.use(bodyParser.urlencoded({

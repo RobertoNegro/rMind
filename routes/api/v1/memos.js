@@ -2,8 +2,8 @@ var debug = require('debug')('rmind:memos');
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var user = require('../../models/user');
-var middlewares = require('../../config/middlewares');
+var user = require('../../../models/user');
+var middlewares = require('../../../config/middlewares');
 
 var router = express.Router();
 router.use(bodyParser.urlencoded({

@@ -7,8 +7,8 @@ var util = require('util');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 
-var user = require('../../models/user');
-var middlewares = require('../../config/middlewares');
+var user = require('../../../models/user');
+var middlewares = require('../../../config/middlewares');
 
 var router = express.Router();
 router.use(bodyParser.urlencoded({
