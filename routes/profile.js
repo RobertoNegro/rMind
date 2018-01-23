@@ -311,14 +311,42 @@ router.post('/', function (req, res) {
 											message: "No user found."
 										});
 
-									// TODO: Ritornare token (in questo modo viene anche filtrato l'output grazie ad authenticate)
-									res.status(200).send(u);
+									user.authenticate(email, password, function (err, token) {
+										if (err)
+											return res.status(500).send({
+												error: true,
+												message: "There was a problem updating the user.",
+												internal: err.message
+											});
+										if (!u)
+											return res.status(404).send({
+												error: true,
+												message: "No user found."
+											});
+
+										res.status(200).send(token);
+									});
 								});
 							});
 						});
 					});
-				} else
-					res.status(200).send(u);
+				} else {
+					user.authenticate(email, password, function (err, token) {
+						if (err)
+							return res.status(500).send({
+								error: true,
+								message: "There was a problem updating the user.",
+								internal: err.message
+							});
+						if (!u)
+							return res.status(404).send({
+								error: true,
+								message: "No user found."
+							});
+
+						res.status(200).send(token);
+					});
+				}
 			});
 		} else {
 			res.status(400).send({
