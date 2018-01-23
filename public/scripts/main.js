@@ -61,6 +61,8 @@ $(document).ready(function () {
 	
 	autosize($('textarea'));
 
+	new SimpleBar($('#aside_scroller')[0]);
+	
 	scrollbar = (new SimpleBar($('#chat_scroller')[0])).getScrollElement();
 	scrollbar.addEventListener('scroll', function (event) {
 		var element = event.target;

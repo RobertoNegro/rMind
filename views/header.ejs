@@ -6,18 +6,18 @@
 
 	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta name="mobile-web-app-capable" content="yes">
-	
-	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' />
-	<link rel='stylesheet'href='/stylesheets/bootstrap-reboot.min.css' />
-	<link rel="stylesheet" href="/stylesheets/simplebar.css" />	
-	<link rel='stylesheet' href='/stylesheets/style.css' />
 
-	<script src="/scripts/jquery-3.2.1.min.js"></script>
-	<script src="/scripts/autosize-4.0.0.min.js"></script>	
-	<script src="/scripts/simplebar.js"></script>
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' />
+	<link rel='stylesheet' href='/stylesheets/bootstrap-reboot.min.css' />
+	<link rel="stylesheet" href="/stylesheets/simplebar.min.css" />
+
+	<script src="/scripts/jquery.min.js"></script>
+	<script src="/scripts/autosize.min.js"></script>
+	<script src="/scripts/simplebar.min.js"></script>
 	<script src="/scripts/screenfull.min.js"></script>
 	<script src="/scripts/hammer.min.js"></script>
-	
+
+	<link rel='stylesheet' href='/stylesheets/style.css' />
 	<script src="/scripts/main.js"></script>
 </head>
 
@@ -32,32 +32,51 @@
 	</nav>
 
 	<aside>
-		<div id="aside_profile">
-			<div id="avatar"><img src="/users/anonym/avatar.jpg"></div>
-			<div id="username">Anonymous</div>
-		</div>
-		<hr />
-		<ul>
-			<a href="#" class="nostyle"><li><img src="/images/aside/login.png"><div>Login</div></li></a>
-			<a href="#" class="nostyle"><li><img src="/images/aside/signup.png"><div>Registrati</div></li></a>
-			<!--
-			<a href="#" class="nostyle"><li><img src="/images/aside/account.png"><div>Gestione account</div></li></a>
-			<a href="#" class="nostyle"><li><img src="/images/aside/logout.png"><div>Logout</div></li></a>
-			-->
-		</ul>
-		<hr />
-		<ul>
-			<a href="#" class="nostyle"><li><img src="/images/aside/info.png"><div>Informazioni</div></li></a>
-			<a href="#" onClick="toggleFullscreen()" class="nostyle"><li><img src="/images/aside/fullscreen.png"><div>Schermo intero</div></li></a>
-		</ul>
-
-		<div id="aside_footer">
-			Copyright &copy; 2018 Roberto Negro<br/>
-			<span id="smaller">(#178932 - Università degli Studi di Trento - a.a. 2017/18)</span>
+		<div id="aside_scroller">
+			<div id="aside_content">
+				<div id="aside_profile">
+					<img src="/users/anonym/avatar.jpg">
+					<div id="username">Anonymous</div>
+				</div>
+				<hr />
+				<ul>
+					<a href="#" class="nostyle">
+						<li><img src="/images/aside/login.png">
+							<div>Login</div>
+						</li>
+					</a>
+					<a href="#" class="nostyle">
+						<li><img src="/images/aside/signup.png">
+							<div>Registrati</div>
+						</li>
+					</a>
+					<!--
+				<a href="#" class="nostyle"><li><img src="/images/aside/account.png"><div>Gestione account</div></li></a>
+				<a href="#" class="nostyle"><li><img src="/images/aside/logout.png"><div>Logout</div></li></a>
+				-->
+				</ul>
+				<hr />
+				<ul>
+					<a href="#" class="nostyle">
+						<li><img src="/images/aside/info.png">
+							<div>Informazioni</div>
+						</li>
+					</a>
+					<a href="#" onClick="toggleFullscreen()" class="nostyle">
+						<li><img src="/images/aside/fullscreen.png">
+							<div>Schermo intero</div>
+						</li>
+					</a>
+				</ul>
+				<div id="spacer"></div>
+				<div id="aside_footer">
+					Copyright &copy; 2018 Roberto Negro<br/>
+					<span id="smaller">(#178932 - Università degli Studi di Trento - a.a. 2017/18)</span>
+				</div>
+			</div>
 		</div>
 	</aside>
-	
+
 	<div id="darker_overlay" onClick="closeAside()"></div>
 
 	<div id="body_wrapper">
-
