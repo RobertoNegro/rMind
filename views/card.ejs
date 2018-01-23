@@ -1,0 +1,73 @@
+<% include header.ejs %>
+
+<div id="cardsettings_container">
+	<form method="POST" action="/card/photo/<%= id %>">
+		<h2>Add photo</h2>
+		<div class="input_row">
+			<label for="path">URL:</label>
+			<input id="path" type="text" name="path" placeholder="Type here the URL of the image" required/>			
+		</div>
+		<div class="input_row">
+			<label for="photo_desc">Description:</label>
+			<input id="photo_desc" type="text" name="desc" placeholder="Type here the description of the image" required/>
+		</div>
+		<input type="submit" value="Add photo"/>
+	</form>
+	
+	<form method="POST" action="/card/link/<%= id %>">
+		<h2>Add link</h2>
+		<div class="input_row">
+			<label for="url">URL:</label>
+			<input id="url" type="text" name="url" placeholder="Type here the URL" required/>			
+		</div>
+		<div class="input_row">
+			<label for="link_desc">Description:</label>
+			<input id="link_desc" type="text" name="desc" placeholder="Type here the description of the link" required/>
+		</div>
+		<input type="submit" value="Add link"/>
+	</form>
+	
+	<form method="POST" action="/card/location/<%= id %>">
+		<h2>Add location</h2>
+		<div class="input_row">
+			<label for="location">Location:</label>
+			<input id="location" type="text" placeholder="Type here the location"/>
+		</div>
+		<button type="button" onClick="generateCoords()">Generate coordinates</button>
+		<hr/>
+		<div class="input_row">
+			<label for="lat">Latitude:</label>
+			<input id="lat" type="text" name="lat" placeholder="Type here the latitude" required/>
+		</div>
+		<div class="input_row">
+			<label for="lng">Longitude:</label>
+			<input id="lng" type="text" name="lng" placeholder="Type here the longitude" required/>			
+		</div>
+		<div class="input_row">
+			<label for="location_desc">Description:</label>
+			<input id="location_desc" type="text" name="desc" placeholder="Type here the description of the location" required/>
+		</div>
+		<input type="submit" value="Add location"/>
+	</form>
+</div>
+
+<script>
+	$(document).ready(function() {
+		new SimpleBar($('#cardsettings_container')[0]);
+	});
+	
+	function generateCoords() {
+		getCoordsFromAddress($('#location').val(), function (err, location) {
+			if (err)
+				console.log(err);
+			else {
+				$('#lat').val(location.lat);
+				$('#lng').val(location.lng);
+				$('#location_desc').val(location.desc);
+			}
+		});
+	}
+	
+</script>
+	
+<% include footer.ejs %>

@@ -65,7 +65,7 @@ router.get('/logout', function (req, res) {
 	res.redirect('/');
 });
 
-router.get('/account', function (req, res) {
+router.get('/account', middlewares.verifyToken, function (req, res) {
 	var token = middlewares.getToken(req);
 	if (token) {
 		request.get({
@@ -250,6 +250,137 @@ router.post('/signup/do', function (req, res) {
 			res.redirect('/');
 		}
 	});
+});
+
+router.get('/card/:id', middlewares.verifyToken, function (req, res) {
+	var id = req.params.id;
+	res.render('card', {
+		logged: true,
+		user: null,
+		turnBackButton: true,
+		id: id
+	});
+});
+
+router.post('/card/photo/:id', middlewares.verifyToken, function (req, res) {
+	var token = middlewares.getToken(req);
+	if (token) {
+		var id = req.params.id;
+
+		var body = {};
+		body['photo'] = {};
+		body['photo']['path'] = req.body.path;
+		body['photo']['desc'] = req.body.desc;
+
+		request({
+			url: constants.rMindURL + 'api/memos/' + id,
+			method: 'PUT',
+			json: true,
+			headers: {
+				'User-Agent': 'request',
+				'x-access-token': token
+			},
+			json: body
+		}, (err, result, data) => {
+			if (err) {
+				return res.status(500).send({
+					error: true,
+					message: 'There was a problem updating the card',
+					internal: err
+				});
+			} else if (result.statusCode !== 200) {
+				return res.status(500).send({
+					error: true,
+					message: 'Card updating returned status code ' + result.statusCode
+				});
+			} else {
+				res.redirect('/');
+			}
+		});
+	} else {
+		res.redirect('/');
+	}
+});
+
+router.post('/card/link/:id', middlewares.verifyToken, function (req, res) {
+	var token = middlewares.getToken(req);
+	if (token) {
+		var id = req.params.id;
+
+		var body = {};
+		body['link'] = {};
+		body['link']['url'] = req.body.url;
+		body['link']['desc'] = req.body.desc;
+
+		request({
+			url: constants.rMindURL + 'api/memos/' + id,
+			method: 'PUT',
+			json: true,
+			headers: {
+				'User-Agent': 'request',
+				'x-access-token': token
+			},
+			json: body
+		}, (err, result, data) => {
+			if (err) {
+				return res.status(500).send({
+					error: true,
+					message: 'There was a problem updating the card',
+					internal: err
+				});
+			} else if (result.statusCode !== 200) {
+				return res.status(500).send({
+					error: true,
+					message: 'Card updating returned status code ' + result.statusCode
+				});
+			} else {
+				res.redirect('/');
+			}
+		});
+	} else {
+		res.redirect('/');
+	}
+});
+
+router.post('/card/location/:id', middlewares.verifyToken, function (req, res) {
+	var token = middlewares.getToken(req);
+	if (token) {
+		var id = req.params.id;
+
+		var body = {};
+		body['location'] = {};
+		body['location']['lat'] = req.body.lat;
+		body['location']['lng'] = req.body.lng;
+		body['location']['desc'] = req.body.desc;
+
+		request({
+			url: constants.rMindURL + 'api/memos/' + id,
+			method: 'PUT',
+			json: true,
+			headers: {
+				'User-Agent': 'request',
+				'x-access-token': token
+			},
+			json: body
+		}, (err, result, data) => {
+			if (err) {
+				return res.status(500).send({
+					error: true,
+					message: 'There was a problem updating the card',
+					internal: err
+				});
+			} else if (result.statusCode !== 200) {
+				return res.status(500).send({
+					error: true,
+					message: 'Card updating returned status code ' + result.statusCode
+				});
+			} else {
+				res.redirect('/');
+			}
+		});
+	} else {
+		res.redirect('/');
+	}
 });
 
 

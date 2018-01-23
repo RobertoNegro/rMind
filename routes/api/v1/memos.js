@@ -151,15 +151,27 @@ router.put('/:id', middlewares.verifyToken, function (req, res) {
 
 	var dateS = req.body.date;
 	var text = req.body.text;
+	
+	var photo = req.body.photo;
+	var location = req.body.location;
+	var link = req.body.link;
 
 	var update = {};
+	
 	update['$set'] = {};
 	if (dateS) 
 		update['$set']['memos.$.date'] = getDate(dateS);
 	if (text)
 		update['$set']['memos.$.text'] = text;
-
-
+	
+	update['$push'] = {};
+	if(photo)
+		update['$push']['memos.$.photo'] = photo;
+	if(location)
+		update['$push']['memos.$.location'] = location;
+	if(link)
+		update['$push']['memos.$.link'] = link;	
+	
 	user.findOneAndUpdate({
 		'_id': tokenId,
 		'memos._id': id

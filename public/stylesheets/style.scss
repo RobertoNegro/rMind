@@ -1416,6 +1416,13 @@ form {
 	border-radius: $cloud-size/8;
 
 	padding: $cloud-size/8;
+	margin: $cloud-size/8;
+	
+	hr {
+		height: 1px;
+		border: 0;
+		background-color: rgba(#000, 0.06);
+	}
 	
 	.input_row {		
 		width:100%;
@@ -1456,7 +1463,7 @@ form {
 		}
 	}
 	
-	input[type=submit] {
+	input[type=submit], button {
 		display:block;
 		margin: $message-height/8 auto;
 		
@@ -1471,6 +1478,11 @@ form {
 		cursor:pointer;
 		
 	}
+}
+
+h2 {
+	color: $header-color;
+	text-align:center;
 }
 
 .gm-style-iw {
