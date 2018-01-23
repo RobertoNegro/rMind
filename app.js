@@ -10,7 +10,7 @@ var db = require('./db');
 
 var index = require('./routes/index');
 var auth = require('./routes/auth');
-var private = require('./routes/private');
+var memos = require('./routes/memos');
 var profile = require('./routes/profile');
 
 var app = express();
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routes
 app.use('/', index);
 app.use('/auth', auth);
-app.use('/private', private);
+app.use('/memos', memos);
 app.use('/profile', profile);
 
 // catch 404 and forward to error handler

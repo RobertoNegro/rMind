@@ -1,4 +1,4 @@
-var debug = require('debug')('rmind:private');
+var debug = require('debug')('rmind:memos');
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
@@ -8,13 +8,11 @@ router.use(bodyParser.urlencoded({
 }));
 router.use(bodyParser.json());
 
-var config = require('../config');
 var user = require('../models/user');
-
 var verifyToken = require('../mid/token');
 
 // CREATE
-router.post('/memos/', verifyToken, function (req, res) {
+router.post('/', verifyToken, function (req, res) {
 	var memo = {
 		date: new Date(req.body.date),
 		text: req.body.text
@@ -30,7 +28,8 @@ router.post('/memos/', verifyToken, function (req, res) {
 		if (err) {
 			return res.status(500).send({
 				error: true,
-				message: "There was a problem updating the user."
+				message: "There was a problem updating the user.",
+				internal: err
 			});
 		}
 
@@ -46,14 +45,15 @@ router.post('/memos/', verifyToken, function (req, res) {
 });
 
 // READ
-router.get('/memos/', verifyToken, function (req, res) {
+router.get('/', verifyToken, function (req, res) {
 	user.findById(req.userId, {
 		password: 0
 	}, function (err, u) {
 		if (err) {
 			return res.status(500).send({
 				error: true,
-				message: "There was a problem finding the user."
+				message: "There was a problem finding the user.",
+				internal: err
 			});
 		}
 
@@ -69,7 +69,7 @@ router.get('/memos/', verifyToken, function (req, res) {
 });
 
 // UPDATE
-router.put('/memos/:id', verifyToken, function (req, res) {
+router.put('/:id', verifyToken, function (req, res) {
 	var tokenId = req.userId;
 	var id = req.params.id;
 
@@ -100,7 +100,8 @@ router.put('/memos/:id', verifyToken, function (req, res) {
 			debug(err);
 			return res.status(500).send({
 				error: true,
-				message: "There was a problem updating the memo."
+				message: "There was a problem updating the memo.",
+				internal: err
 			});
 		}
 		if (!u) {
@@ -115,7 +116,7 @@ router.put('/memos/:id', verifyToken, function (req, res) {
 });
 
 // DELETE
-router.delete('/memos/:id', verifyToken, function (req, res) {
+router.delete('/:id', verifyToken, function (req, res) {
 	var tokenId = req.userId;
 	var id = req.params.id;
 
@@ -130,7 +131,8 @@ router.delete('/memos/:id', verifyToken, function (req, res) {
 			debug(err);
 			return res.status(500).send({
 				error: true,
-				message: "There was a problem removing the memo."
+				message: "There was a problem removing the memo.",
+				internal: err
 			});
 		}
 		if (!u) {
