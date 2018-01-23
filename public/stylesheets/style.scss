@@ -197,27 +197,38 @@ aside {
 				width: 100%;
 				text-align: center;
 
-				img {
-					padding: 0;
-
-					display: block;
-
-					object-fit: contain;
-
-					width: auto;
-					height: auto;
-
-					max-width: 50%;
-					max-height: 50vh;
+				#aside_avatar_container {
+					width: 50%;
 
 					margin: auto;
-					border-radius: 50%;
-					background-color: #fff;
-					border: 5px solid #fff;
+					padding: 0;
 
+					padding-bottom: 50%;
+
+					position: relative;
 					overflow: hidden;
-				}
 
+					background-color: #fff;
+					border-radius: 50%;
+
+
+					img {
+						padding: 0;
+						margin: 0;
+
+						display: block;
+						object-fit: cover;
+
+						position: absolute;
+						top: 0;
+						left: 0;
+						height: 100%;
+						width: 100%;
+
+						border-radius: 50%;
+						border: 5px solid #fff;
+					}
+				}
 
 				#username {
 					font-weight: bold;
@@ -393,15 +404,27 @@ nav {
 			cursor: pointer
 		}
 
-		padding-top: $header-height/12;
-		padding-bottom: $header-height/12;
+		
+		
+		height: $header-height - $header-height/6;
+		width: $header-height - $header-height/6;
 
+		margin-top: $header-height/12;
+		margin-bottom: $header-height/12;
+
+		overflow:hidden;
+
+		border-radius: 50%;
+		background-color: #fff;
 
 		img {
+			object-fit: cover;
 			height: 100%;
+			width: 100%;
 			background-color: #fff;
-			border: 0.2rem solid #fff;
+			
 			border-radius: 50%;
+			border: 0.2rem solid #fff;
 		}
 	}
 }
@@ -599,7 +622,7 @@ nav {
 					width: 100%;
 					margin-left: -$cloud-size/8;
 					margin-right: -$cloud-size/8;
-					
+
 					touch-action: auto !important;
 
 					opacity: 1;
@@ -845,7 +868,7 @@ nav {
 
 										pointer-events: none;
 
-										background-color: rgba(#c3bcbd, 0.65);										
+										background-color: rgba(#c3bcbd, 0.65);
 										transition: background-color $card-swap-duration/3 ease-in $card-swap-duration/2;
 									}
 

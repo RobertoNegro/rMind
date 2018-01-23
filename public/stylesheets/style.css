@@ -110,19 +110,27 @@ aside {
       aside #aside_scroller #aside_content #aside_profile {
         width: 100%;
         text-align: center; }
-        aside #aside_scroller #aside_content #aside_profile img {
-          padding: 0;
-          display: block;
-          object-fit: contain;
-          width: auto;
-          height: auto;
-          max-width: 50%;
-          max-height: 50vh;
+        aside #aside_scroller #aside_content #aside_profile #aside_avatar_container {
+          width: 50%;
           margin: auto;
-          border-radius: 50%;
+          padding: 0;
+          padding-bottom: 50%;
+          position: relative;
+          overflow: hidden;
           background-color: #fff;
-          border: 5px solid #fff;
-          overflow: hidden; }
+          border-radius: 50%; }
+          aside #aside_scroller #aside_content #aside_profile #aside_avatar_container img {
+            padding: 0;
+            margin: 0;
+            display: block;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+            border: 5px solid #fff; }
         aside #aside_scroller #aside_content #aside_profile #username {
           font-weight: bold; }
       aside #aside_scroller #aside_content hr {
@@ -229,15 +237,22 @@ nav {
     padding-top: 1rem;
     padding-bottom: 1rem; }
   nav #avatar {
-    padding-top: 0.33333rem;
-    padding-bottom: 0.33333rem; }
+    height: 3.33333rem;
+    width: 3.33333rem;
+    margin-top: 0.33333rem;
+    margin-bottom: 0.33333rem;
+    overflow: hidden;
+    border-radius: 50%;
+    background-color: #fff; }
     nav #avatar:hover {
       cursor: pointer; }
     nav #avatar img {
+      object-fit: cover;
       height: 100%;
+      width: 100%;
       background-color: #fff;
-      border: 0.2rem solid #fff;
-      border-radius: 50%; }
+      border-radius: 50%;
+      border: 0.2rem solid #fff; }
 
 #darker_overlay {
   z-index: 1001;
