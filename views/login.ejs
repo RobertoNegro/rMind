@@ -11,6 +11,9 @@
 			<input id="password" type="password" name="password" placeholder="Type here your password" required/>
 		</div>
 		
+		<% if(error) { %>
+			<div style="color:#e20;text-align:center">Invalid credentials!</div>
+		<% } %>
 		<div style="text-align:center">Don't have a rMind account? <a href="/signup">Sign up here</a></div>
 		<input type="submit" value="Login"/>
 	</form>
