@@ -61,24 +61,39 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 	var diff = diffMinutes(date);
 	var code;
 
+	var subcardIndex = 0;
+	var subcardCount = 0;
+	if (maps && maps.length > 0)
+		subcardCount += maps.length;
+	if (pictures && pictures.length > 0)
+		subcardCount += pictures.length;
+	if (links && links.length > 0)
+		subcardCount += links.length;
 
-	if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
+	if (subcardCount > 0) {
 		subcard =
 			'<div class="subcard">' +
 			'<div class="content_container">';
 	}
 
 	if (links && links.length > 0) {
-		for (var i = 0, len = links.length; i < len; i++)
-			subcard += '<div id="link_' + id + '_' + i + '" class="link"><a target="_blank" href="' + links[i].url + '">' + links[i].desc + '</a></div>';
+		for (var i = 0, len = links.length; i < len; i++) {
+			subcard += '<div style="left: ' + (subcardCount - subcardIndex)*10 + 'px; top: ' + (subcardCount - subcardIndex)*5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex)*5 + 'px" id="link_' + id + '_' + i + '" class="link"><a target="_blank" href="' + links[i].url + '">' + links[i].desc + '</a></div>';
+			subcardIndex++;
+		}
+
 	}
 	if (pictures && pictures.length > 0) {
-		for (var i = 0, len = pictures.length; i < len; i++)
-			subcard += '<div id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">' + pictures[i].desc + '</span></div>';
+		for (var i = 0, len = pictures.length; i < len; i++) {			
+			subcard += '<div style="left: ' + (subcardCount - subcardIndex)*10 + 'px; top: ' + (subcardCount - subcardIndex)*5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex)*5 + 'px" id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">' + pictures[i].desc + '</span></div>';
+			subcardIndex++;
+		}
 	}
 	if (maps && maps.length > 0) {
-		for (var i = 0, len = maps.length; i < len; i++)
-			subcard += '<div class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">' + maps[i].desc + '</span></div>';
+		for (var i = 0, len = maps.length; i < len; i++) {
+			subcard += '<div style="left: ' + (subcardCount - subcardIndex)*10 + 'px; top: ' + (subcardCount - subcardIndex)*5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex)*5 + 'px" class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">' + maps[i].desc + '</span></div>';
+			subcardIndex++;
+		}
 	}
 
 	if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
@@ -169,12 +184,12 @@ function prepareCard(selector, date) {
 
 	// left arrow
 	$(selector + ' > .subcard > .arrows > .left').on('click', function () {
-		prevSubcard(selector);
+		nextSubcard(selector);
 	});
 
 	// right arrow
 	$(selector + ' > .subcard > .arrows > .right').on('click', function () {
-		nextSubcard(selector);
+		prevSubcard(selector);
 	});
 
 	// clock
@@ -198,11 +213,11 @@ function prepareCard(selector, date) {
 	var manager = new Hammer.Manager($(selector).parent('.card_wrapper').get(0));
 	manager.add(new Hammer.Pan({
 		domEvents: true,
-		threshold: 10
+		threshold: 10,		
 	}));
 
-	manager.on('pan', function (e) {
-		if ($(e.target).is('.map') || $(e.target).parents('.map').length > 0) {
+	manager.on('pan', function (e) {		
+		if ($(e.target).is('.map') || $(e.target).parents('.map').length > 0 || $(e.target).is('.arrows > img') || $(e.target).parents('.arrows > img').length > 0) {
 			manager.stop();
 		} else {
 			switch (e.additionalEvent) {

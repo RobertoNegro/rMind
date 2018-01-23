@@ -34,9 +34,9 @@ $(document).ready(function () {
 
 	$('#message_input').on('keypress', function (e) {
 		if (e.which === 13) {
-			if(!e.shiftKey) {
-			e.preventDefault();
-			sendMessage();
+			if (!e.shiftKey) {
+				e.preventDefault();
+				sendMessage();
 			}
 		}
 	});
@@ -53,8 +53,31 @@ $(document).ready(function () {
 					url: 'http://www.gioia.it/bellezza/profumi/consigli/g3329/profumi-inverno-2018-novita/',
 					desc: 'Profumi 2018 novità'
 				}]);
+				addMessage('Another one!', 'recv');
 			}
 		});
-	}, 2000);
+		
+		
+		
+		setTimeout(function () {
+			var coords = getCoordsFromAddress('Aereoporto Venezia', function (err, location) {
+				if (err)
+					console.log(err);
+				else {
+					addRecvCard("ab", new Date(2018, 0, 11, 4, 30, 0, 0), "Take John from the Airport", [location], [{
+						path: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Richmond_International_Airport.jpg',
+						desc: 'An airport'
+				}, {
+					path: 'https://brightcove04pmdo-a.akamaihd.net/5104226627001/5104226627001_5244707255001_5214913279001-vs.jpg?pubId=5104226627001&videoId=5214913279001',
+					desc: 'Venice at night'
+				}], [{
+						url: 'http://www.veniceairport.it/voli.html',
+						desc: 'Info about flights from venice'
+				}]);
+					addMessage('Another one!', 'recv');
+				}
+			});
+		}, 100);
+	}, 100);
 
 });

@@ -543,15 +543,15 @@ nav {
 
 					padding: $cloud-size/8;
 					margin: $cloud-size/8 $cloud-size/4;
-					
+
 					transform: translate3d(0, 0, 0);
-					opacity:1;
+					opacity: 1;
 					transition: transform .15s ease-in, opacity 0.15s ease-in;
-					
+
 					&.hide {
-						opacity:0;
+						opacity: 0;
 						transform: translate3d(0, 100%, 0);
-						transition: transform .15s ease-out, opacity 0.15s ease-out;					
+						transition: transform .15s ease-out, opacity 0.15s ease-out;
 					}
 
 
@@ -599,14 +599,14 @@ nav {
 					width: 100%;
 					margin-left: -$cloud-size/8;
 					margin-right: -$cloud-size/8;
-					
+
 					opacity: 1;
-					transform: translate3d(0,0, 0);
+					transform: translate3d(0, 0, 0);
 					transition: transform .25s ease-in, opacity .25s ease-in;
-					
+
 					&.hide {
 						transform: translate3d(0, 100%, 0);
-						opacity:0;
+						opacity: 0;
 						transition: transform .25s ease-out, opacity .25s ease-out;
 					}
 
@@ -791,9 +791,7 @@ nav {
 							transition: z-index 0s linear $card-swap-duration/2;
 
 							transform-origin: 100% 50%;
-							transform: scale3d(0.9, 0.9, 1) translate3d(3rem, 0, 0);
-							box-shadow: 2px 2px 6px rgba(#000, 0.2);
-
+							transform: scale3d(0.9, 0.9, 1) translate3d(3rem, 0, 0); //box-shadow: 2px 2px 6px rgba(#000, 0.2);
 							.hide_overlay {
 								position: absolute;
 
@@ -802,8 +800,7 @@ nav {
 								bottom: -1px;
 								right: -1px;
 
-								background-color: rgba(#c3bcbd, 0.65);
-								transition: background-color $card-swap-duration/3 ease-in $card-swap-duration/2;
+								background-color: transparent;
 
 								pointer-events: auto;
 								&:hover {
@@ -831,22 +828,32 @@ nav {
 								left: 0;
 
 								width: 100%;
-								height: 100%;
-
-								overflow: hidden;
-
+								height: 100%; //overflow: hidden;
 								.map,
 								.picture,
 								.link {
+									&:before {
+										z-index: 1;
+										content: '';
+										position: absolute;
+										top: 0;
+										left: 0;
+										right: 0;
+										bottom: 0;
+
+										pointer-events: none;
+
+										background-color: rgba(#c3bcbd, 0.65);										
+										transition: background-color $card-swap-duration/3 ease-in $card-swap-duration/2;
+									}
+
+									z-index: 0;
+
 									position: absolute;
-
 									background-color: #fff;
+									box-shadow: 2px 2px 6px rgba(#000,
+									0.4);
 
-									top: 0;
-									left: 0;
-
-									width: 100%;
-									height: 100%;
 
 									opacity: 1;
 									transition: opacity 0.15s ease-out;
@@ -919,10 +926,16 @@ nav {
 								animation-name: subcardAnimShow;
 								animation-direction: normal;
 
-								.hide_overlay {
-									background-color: rgba(#c3bcbd, 0);
-									transition: background-color $card-swap-duration/2 ease-out;
+								.map,
+								.picture,
+								.link {
+									&:before {
+										background-color: rgba(#c3bcbd, 0);
+										transition: background-color $card-swap-duration/2 ease-out;
+									}
+								}
 
+								.hide_overlay {
 									pointer-events: none;
 
 									img {
@@ -961,7 +974,6 @@ nav {
 								pointer-events: none;
 
 								width: 2rem;
-
 
 
 								img {
@@ -1191,7 +1203,7 @@ nav {
 		align-items: center;
 		align-content: center;
 		flex-wrap: nowrap;
-				
+
 		.row:nth-child(odd) {
 			background-color: #fff;
 		}
@@ -1242,7 +1254,7 @@ nav {
 				color: #aaa;
 				font-size: 0.8rem;
 				border: 2px solid #f3f3f3;
-				
+
 				&.no_day {
 					&:before {
 						content: '';
@@ -1287,19 +1299,19 @@ nav {
 						margin: auto;
 						background-color: #90323d;
 					}
-					
+
 					&.no_left {
 						&:before {
 							left: 0 !important;
 						}
 					}
-					
+
 					&.no_right {
 						&:before {
 							right: 0 !important;
 						}
 					}
-					
+
 					&.start {
 						&:after {
 							z-index: -1;
