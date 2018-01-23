@@ -37,7 +37,7 @@ $(document).ready(function () {
 		if(err)
 			console.log(err);
 		else {
-			addRecvCard("aa", new Date(2018, 0, 9, 2, 41, 0, 0), "Dinner with colleagues", [ location ], [{ path: 'https://fimgs.net/images/secundar/o.44140.jpg', desc:'Via Trento, 12'}]);
+			addRecvCard("aa", new Date(2018, 0, 5, 15, 41, 0, 0), "Dinner with colleagues", [ location ], [{ path: 'https://fimgs.net/images/secundar/o.44140.jpg', desc:'Il profumo che vuole'}], [{ url: 'http://www.google.it', desc:'Gooogle' }]);
 		}
 	});
 });

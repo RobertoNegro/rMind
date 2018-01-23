@@ -57,112 +57,101 @@ function prevSubcard(selector) {
 }
 
 function addRecvCard(id, date, title, maps, pictures, links) {
-	if (date > new Date()) {
-		var code;
+	var diff = diffMinutes(date);
+	var code;
 
-		var subcard = '';
-		if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
-			subcard += '<div class="subcard">' +
-				'<div class="content_container">';
-		}
-
-		if (links && links.length > 0) {
-			for (var i = 0, len = links.length; i < len; i++)
-				subcard += '<div id=link_' + id + '_' + i + ' class="link"><a target="_blank" href="' + links[i].url + '">' + links[i].desc + '</a></div>';
-		}
-		if (pictures && pictures.length > 0) {
-			for (var i = 0, len = pictures.length; i < len; i++)
-				subcard += '<div id=picture_' + id + '_' + i + ' class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /></div>';
-		}
-		if (maps && maps.length > 0) {
-			for (var i = 0, len = maps.length; i < len; i++)
-				subcard += '<div id=map_' + id + '_' + i + ' class="map"></div>';
-		}
-
-		if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
-			subcard += 
-				'</div>' +
-				'<div class="arrows">' +
-				'<img class="left" src="/images/left_arrow.png" />' +
-				'<img class="right" src="/images/right_arrow.png" />' +
-				'</div>' +
-				'<div class="hide_overlay"><img src="/images/swap_button.png" /></div>' +
-				'</div>';
-		}
-
-		if (diffMinutes(date) < 60 * 12) {
-			code =
-				'<div class="card_wrapper">' +
-				'<div class="card_container" id="card_' + id + '">' +
-				'<div class="card">' +
-				'<div class="top_right_buttons">' +
-				'<img src="/images/settings_button.png" />' +
-				'<img src="/images/delete_button.png" />' +
-				'</div>' +
-				'<div class="when">' +
-				'<div class="date">N/A</div>' +
-				'<div class="time">N/A</div>' +
-				'</div>' +
-				'<div class="clock_container">' +
-				'<canvas class="clock"></canvas>' +
-				'<div class="meridiem">N/A</div>' +
-				'</div>' +
-				'<div class="title">' + title + '</div>' +
-				'<div class="remaining">remaining <strong>N/A</strong> time</div>' +
-				'<div class="hide_overlay"><img src="/images/swap_button.png" /></div>' +
-				'</div>' +
-				subcard +
-				'</div>' +
-				'</div>';
-		} else {
-			code =
-				'<div class="card_wrapper">' +
-				'<div class="card_container" id="card_' + id + '">' +
-				'<div class="card">' +
-				'<div class="top_right_buttons">' +
-				'<img src="/images/settings_button.png" />' +
-				'<img src="/images/delete_button.png" />' +
-				'</div>' +
-				'<div class="when">' +
-				'<div class="date">N/A</div>' +
-				'<div class="time">N/A</div>' +
-				'</div>' +
-				'<div class="calendar_container">' +
-				'<div class="calendar"></div>' +
-				'</div>' +
-				'<div class="title">' + title + '</div>' +
-				'<div class="remaining">remaining <strong>N/A</strong> time</div>' +
-				'<div class="hide_overlay"><img src="/images/swap_button.png" /></div>' +
-				'</div>' +
-				subcard +
-				'</div>' +
-				'</div>';
-		}
-
-		$('#chat_messages').append(code);
-
-		if (maps && maps.length > 0) {
-			for (var i = 0, len = maps.length; i < len; i++) {
-				new GMaps({
-					div: $('#map_' + id + '_' + i).get(0),
-					lat: maps[i].lat,
-					lng: maps[i].lng
-				}).addMarker({
-					lat: maps[i].lat,
-					lng: maps[i].lng,
-					title: maps[i].desc,
-					infoWindow: {
-						content: maps[i].desc
-					}
-				});;
-			}
-		}
-
-		prepareCard('#card_' + id, date);
+	var subcard = '';
+	if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
+		subcard += '<div class="subcard">' +
+			'<div class="content_container">';
 	}
+
+	if (links && links.length > 0) {
+		for (var i = 0, len = links.length; i < len; i++)
+			subcard += '<div id="link_' + id + '_' + i + '" class="link"><a target="_blank" href="' + links[i].url + '">' + links[i].desc + '</a></div>';
+	}
+	if (pictures && pictures.length > 0) {
+		for (var i = 0, len = pictures.length; i < len; i++)
+			subcard += '<div id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">'+pictures[i].desc+'</span></div>';
+	}
+	if (maps && maps.length > 0) {
+		for (var i = 0, len = maps.length; i < len; i++)
+			subcard += '<div class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">'+maps[i].desc+'</span></div>';
+	}
+
+	if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
+		subcard +=
+			'</div>' +
+			'<div class="arrows">' +
+			'<img class="left" src="/images/left_arrow.png" />' +
+			'<img class="right" src="/images/right_arrow.png" />' +
+			'</div>' +
+			'<div class="hide_overlay"><img src="/images/swap_button.png" /></div>' +
+			'</div>';
+	}
+
+	code =
+		'<div class="card_wrapper">' +
+		'<div class="card_container" id="card_' + id + '">' +
+		'<div class="card">' +
+		'<div class="top_right_buttons">' +
+		'<img src="/images/settings_button.png" />' +
+		'<img src="/images/delete_button.png" />' +
+		'</div>' +
+		'<div class="when">' +
+		'<div class="date">N/A</div>' +
+		'<div class="time">N/A</div>' +
+		'</div>' +
+		'<div class="indicator_container">';
+
+	if (diff < 0) {
+		console.warn("Adding an old reminder!");
+		code +=
+			'<img src="/images/toolate.png" alt="Too late!" title="Too late!" />';
+	} else if (diff < 60 * 12) {
+		code +=
+			'<canvas class="clock"></canvas>' +
+			'<div class="meridiem">N/A</div>';
+	} else {
+		code +=
+			'<div class="calendar"></div>';
+	}
+
+	code +=		
+		'</div>' +
+		'<div class="title">' + title + '</div>' +
+		'<div class="remaining">remaining <strong>N/A</strong> time</div>' +
+		'<div class="hide_overlay"><img src="/images/swap_button.png" /></div>' +
+		'</div>' +
+		subcard +
+		'</div>' +
+		'</div>';
+
+	$('#chat_messages').append(code);
+
+	if (maps && maps.length > 0) {
+		for (var i = 0, len = maps.length; i < len; i++) {
+			new GMaps({
+				div: $('#map_' + id + '_' + i).get(0),
+				lat: maps[i].lat,
+				lng: maps[i].lng
+			}).addMarker({
+				lat: maps[i].lat,
+				lng: maps[i].lng,
+				title: maps[i].desc,
+				infoWindow: {
+					content: maps[i].desc
+				}
+			});;
+		}
+	}
+
+	prepareCard('#card_' + id, date);
 }
 
 function prepareCard(selector, date) {
+
+
 	// selectable subcard
 	$(selector + ' > .subcard > .hide_overlay').on('click', function () {
 		switchCard(selector, true);

@@ -10,64 +10,6 @@
 				<div class="message sent">What to do this week?</div>
 				<div class="message recv">Checking..</div>
 				<div class="message recv">This is what I've found!</div>
-
-				<div class="card_wrapper">
-					<div class="card_container" id="card_1">
-						<div class="card">
-							<div class="top_right_buttons">
-								<img src="/images/settings_button.png" />
-								<img src="/images/delete_button.png" />
-							</div>
-
-							<div class="when">
-								<div class="date"></div>
-								<div class="time"></div>
-							</div>
-							<div class="clock_container">
-								<canvas class="clock"></canvas>
-								<div class="meridiem">p.m.</div>
-							</div>
-							<div class="title">Buy a gift for Alice from Sephora</div>
-							<div class="remaining">remaining <strong>2 hours</strong> and <strong>5 minutes</strong></div>
-
-							<div class="hide_overlay"><img src="/images/swap_button.png" /></div>
-						</div>
-
-						<div class="subcard">
-							<div class="content_container">
-								<div class="map"></div>
-								<div class="picture"><img src="https://fimgs.net/images/secundar/o.44140.jpg" /></div>
-							</div>
-							<div class="arrows">
-								<img class="left" src="/images/left_arrow.png" />
-								<img class="right" src="/images/right_arrow.png" />
-							</div>
-							<div class="hide_overlay"><img src="/images/swap_button.png" /></div>
-						</div>
-
-						<script>							
-							var date = new Date(2018, 1, 8, 22, 30, 0, 0);			
-							prepareCard('#card_1', date);
-							
-							// map
-							new GMaps({
-								div: $('#card_1 .subcard .map').get(0),
-								lat: -12.043333,
-								lng: -77.028333
-							}).addMarker({
-								lat: -12.043333,
-								lng: -77.028333,
-								title: 'Lima',
-								infoWindow: {
-									content: '<p>Via Pasquale, 21, Trento</p>'
-								}
-							});;
-
-						</script>
-					</div>
-				</div>
-
-				<div class="message recv">Can I do anything else?</div>
 			</div>
 
 			<div id="thinking_indicators">
