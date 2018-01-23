@@ -1,3 +1,5 @@
+var GOOGLE_GEOCODING_KEY = "AIzaSyAlJ4pyXibSAQA_W1BboAeYIMMMGvrculo";
+
 var hasToResetFullscreen = false;
 var scrollbar;
 
@@ -41,22 +43,46 @@ function scrollToBottom() {
 	}, 500);
 }
 
-function addAsidePanFunctionality(el) {
+function addAsidePanFunctionality(elements, excluded) {
 	//delete Hammer.defaults.cssProps.userSelect;
+	var len = elements.length;
+	var managers = [];
 
-	var manager = new Hammer.Manager(el);
-	manager.add(new Hammer.Pan({
-		domEvents: true,
-		threshold: 10
-	}));
+	var isExcluded = function (selector) {
+		var res = false;
+		for (var j = 0; j < excluded.length && !res; j++) {
+			if ($(selector).is(excluded[j]) || $(selector).parents(excluded[j]).length > 0)
+				res = true;
+		}
+		return res;
+	}
 
-	manager.on('panleft', function (e) {
-		closeAside();
-	});
+	for (var i = 0; i < len; i++) {
+		managers.push(new Hammer.Manager(document.querySelector(elements[i])));
+	}
 
-	manager.on('panright', function (e) {
-		openAside();
-	});
+	for (var i = 0; i < len; i++) {
+		managers[i].add(new Hammer.Pan({
+			domEvents: true,
+			threshold: 10
+		}));
+
+		managers[i].on('pan', function (e) {
+			if (isExcluded(e.target)) {
+				for (var j = 0; j < len; j++)
+					managers[j].stop();
+			} else {
+				switch (e.additionalEvent) {
+					case 'panleft':
+						closeAside();
+						break;
+					case 'panright':
+						openAside();
+						break;
+				}
+			}
+		});
+	}
 }
 
 function refreshSendVoiceButtons() {
@@ -70,14 +96,14 @@ function refreshSendVoiceButtons() {
 }
 
 function addMessage(text, type) {
-	var el = $('<div class="message '+type+'">' + text + '</div>').appendTo('#chat_messages');
-	
+	var el = $('<div class="message ' + type + '">' + text + '</div>').appendTo('#chat_messages');
+
 	var autoHeight = el.height();
 	var curMinHeight = el.css('min-height');
 	var curPaddingTop = el.css('padding-top');
 	var curPaddingBottom = el.css('padding-bottom');
 	var curColor = el.css('color');
-	
+
 	el.css({
 		'height': '0px',
 		'min-height': '0px',
@@ -93,7 +119,7 @@ function addMessage(text, type) {
 		'opacity': '1',
 		'color': curColor
 	}, 250, 'swing');
-	
+
 	scrollToBottom();
 }
 
@@ -106,10 +132,83 @@ function addRecvMessage(text) {
 }
 
 function sendMessage() {
-	addSendMessage($('#message_input').val());
+	var text = $('#message_input').val();
+	$('#message_input').val('');
+	addSendMessage(text);
+
 	// TODO: DUMMY FUNC SEND MESSAGE
-	
-	isThinking(true);	
+
+	isThinking(true);
+}
+
+
+
+function switchCard(selector, showSub) {
+	if (!$(selector + ' .subcard').hasClass('animated') && !$(selector + ' .card').hasClass('animated')) {
+		if (showSub) {
+			$(selector + ' .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+			$(selector + ' .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+
+			$(selector + ' .subcard').toggleClass('hide', false).toggleClass('show', true).toggleClass('animated', true);
+			$(selector + ' .subcard').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+				$(selector + ' .subcard').toggleClass('animated', false);
+			});
+			
+			$(selector + ' .card').stop(true, true).toggleClass('show', false).toggleClass('hide', true).toggleClass('animated', true);
+			$(selector + ' .card').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+				$(selector + ' .card').toggleClass('animated', false);
+			});
+		} else {
+			$(selector + ' .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+			$(selector + ' .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+			
+			$(selector + ' .subcard').stop(true, true).toggleClass('show', false).toggleClass('hide', true).toggleClass('animated', true);
+			$(selector + ' .subcard').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+				$(selector + ' .subcard').toggleClass('animated', false);
+			});
+			
+			$(selector + ' .card').stop(true, true).toggleClass('hide', false).toggleClass('show', true).toggleClass('animated', true);
+			$(selector + ' .card').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+				$(selector + ' .card').toggleClass('animated', false);
+			});
+		}
+	}
+}
+
+/*
+
+function switchCard(selector, showSub) {
+	if (showSub) {
+		$(selector + ' .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd");
+		$(selector + ' .subcard').stop(true, true).toggleClass('show', true);
+		
+		$(selector + ' .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd");
+		$(selector + ' .card').stop(true, true).toggleClass('hide', true);			
+	} else {
+		$(selector + ' .subcard').stop(true, true).toggleClass('hide', true);
+		$(selector + ' .subcard').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+			$(selector + ' .subcard').toggleClass('show', false).toggleClass('hide', false);
+		});
+		
+		$(selector + ' .card').stop(true, true).toggleClass('show', true);		
+		$(selector + ' .card').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+			$(selector + ' .card').toggleClass('show', false).toggleClass('hide', false);
+		});
+	}
+}
+*/
+function getLatLng(address) {
+	var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + GOOGLE_GEOCODING_KEY;
+	$.getJSON(url, function (data, textStatus) {
+		return data.results[0].geometry.location;
+	});
+}
+
+function getAddress(lat, lng) {
+	var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=" + GOOGLE_GEOCODING_KEY;
+	$.getJSON(url, function (data, textStatus) {
+		return data.results[0].formatted_address;
+	});
 }
 
 $(document).ready(function () {
@@ -133,16 +232,14 @@ $(document).ready(function () {
 
 	scrollToBottom();
 
-	addAsidePanFunctionality(document.querySelector('aside'));
-	addAsidePanFunctionality(document.querySelector('nav'));
-	addAsidePanFunctionality(document.querySelector('#darker_overlay'));
-	addAsidePanFunctionality(document.querySelector('#chat_scroller'));
+	addAsidePanFunctionality(['aside', 'nav', '#darker_overlay', '#chat_scroller'], ['.card_container']);
 
 	$('#message_input').focusin(function () {
 		if (screenfull.enabled && screenfull.isFullscreen) {
 			screenfull.exit();
 			hasToResetFullscreen = true;
 		}
+		scrollToBottom();
 	});
 
 	$('#message_input').focusout(function () {
@@ -156,6 +253,5 @@ $(document).ready(function () {
 		refreshSendVoiceButtons();
 	});
 	refreshSendVoiceButtons();
-	
-	$('canvas#1').clock(new Date(0, 0, 0, 0, 0, 0, 0));
+
 });

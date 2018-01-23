@@ -15,6 +15,8 @@ $float-button-size: 3rem;
 $indicators-size: .7rem;
 $indicators-anim-duration: .3s;
 
+$card-swap-duration: 0.7s;
+
 @media screen and (max-width:800px) {
 	aside {
 		width: 80% !important;
@@ -32,9 +34,9 @@ $indicators-anim-duration: .3s;
 			transform: translate3d(80%, 0, 0) !important;
 		}
 	}
-	
+
 	#chat_messages {
-		.card {
+		.card_container {
 			max-width: 80% !important;
 		}
 	}
@@ -48,6 +50,50 @@ $indicators-anim-duration: .3s;
 	100% {
 		opacity: 1;
 		transform: translate3d(0, +$indicators-size/2, 0);
+	}
+}
+
+
+@keyframes cardAnimShow {
+	0% {
+		transform: scale3d(0.9, 0.9, 1) translate3d(-4rem, 0, 0);
+	}
+	50% {
+		transform: scale3d(0.95, 0.95, 1) translate3d(-100%, 0, 0);
+	}
+	100% {
+		transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+	}
+}
+
+@keyframes cardAnimHide {
+	0% {
+		transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+	}
+	100% {
+		transform: scale3d(0.9, 0.9, 1) translate3d(-4rem, 0, 0);
+	}
+}
+
+
+@keyframes subcardAnimShow {
+	0% {
+		transform: scale3d(0.9, 0.9, 1) translate3d(4rem, 0, 0);
+	}
+	50% {
+		transform: scale3d(0.95, 0.95, 1) translate3d(100%, 0, 0);
+	}
+	100% {
+		transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+	}
+}
+
+@keyframes subcardAnimHide {
+	0% {
+		transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+	}
+	100% {
+		transform: scale3d(0.9, 0.9, 1) translate3d(4rem, 0, 0);
 	}
 }
 
@@ -210,8 +256,8 @@ aside {
 							margin-right: 1.5rem;
 						}
 
-						padding-left: 3rem;
-						padding-right: 3rem;
+						padding-left: 1.5rem;
+						padding-right: 1.5rem;
 						padding-top: .75rem;
 						padding-bottom:.75rem;
 
@@ -351,6 +397,7 @@ nav {
 
 
 		img {
+			height: 100%;
 			background-color: #fff;
 			border: 0.2rem solid #fff;
 			border-radius: 50%;
@@ -489,7 +536,7 @@ nav {
 					font-size: 1rem;
 					line-height: 1.5;
 					min-height: 1.5rem + 2*$cloud-size/8;
-					
+
 					width: auto;
 					min-width: 60px;
 
@@ -497,7 +544,7 @@ nav {
 
 					padding: $cloud-size/8;
 					margin: $cloud-size/8;
-					
+
 
 					&:after {
 						content: '';
@@ -536,73 +583,292 @@ nav {
 						}
 					}
 				}
-				
-				.card {					
-					position: relative;
-				
-					text-align: center;
-					
-					max-width: 50%;
-					
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-items: center;
-					align-content: center;
-					
-					background-color: #fff;
 
-					box-shadow: 2px 2px 6px rgba(#000, 0.2);
-					
-					padding: $cloud-size/8;
+				.card_container {
+					position: relative;
+					max-width: 50%;
 					margin: $cloud-size/8;
-					
-					.top_right_buttons {
-						position: absolute;
-						top:$cloud-size/8;
-						right: $cloud-size/8;
-						
+
+					.card {
+						position: relative;
+						z-index: 10;
+
+						text-align: center;
+
+						width: 100%;
+
 						display: flex;
 						flex-direction: column;
 						justify-content: center;
 						align-items: center;
 						align-content: center;
-					
-						img {						
-							height: 1rem;							
-							margin:$cloud-size/16;
-							&:hover{
-								cursor: pointer;
+
+						background-color: #fff;
+
+						box-shadow: 2px 2px 6px rgba(#000, 0.2);
+
+						padding: $cloud-size/8;
+
+						transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+
+						.hide_overlay {
+							position: absolute;
+
+							top: -1px;
+							left: -1px;
+							bottom: -1px;
+							right: -1px;
+
+							background-color: rgba(#c3bcbd, 0);
+							pointer-events: none;
+
+							transition: background-color $card-swap-duration/2 ease-out;
+
+							img {
+								position: absolute;
+								bottom: .5rem;
+								left: .5rem;
+								width: 2rem;
+								height: 2rem;
+
+								pointer-events: inherit;
+
+								opacity: 0;
+								transition: background-color $card-swap-duration/2 ease-out;
+							}
+						}
+
+						&.hide {
+							animation-duration: $card-swap-duration;
+							animation-iteration-count: 1;
+							animation-timing-function: ease-in-out;
+							animation-fill-mode: forwards;
+							animation-name: cardAnimHide;
+							animation-direction: normal;
+
+							.hide_overlay {
+								pointer-events: auto;
+								background-color: rgba(#c3bcbd, 0.65);
+								transition: background-color $card-swap-duration/3 ease-in $card-swap-duration/2;
+
+								img {
+									opacity: 1;
+									transition: background-color $card-swap-duration/3 ease-in $card-swap-duration/2;
+								}
+							}
+						}
+
+						&.show {
+							animation-duration: $card-swap-duration;
+							animation-iteration-count: 1;
+							animation-timing-function: ease-in-out;
+							animation-fill-mode: forwards;
+							animation-name: cardAnimShow;
+							animation-direction: normal;
+						}
+
+						.top_right_buttons {
+							position: absolute;
+							top: $cloud-size/8;
+							right: $cloud-size/8;
+
+							display: flex;
+							flex-direction: column;
+							justify-content: center;
+							align-items: center;
+							align-content: center;
+
+							img {
+								height: 1.5rem;
+								margin: $cloud-size/16;
+
+								&:hover {
+									cursor: pointer;
+								}
+							}
+						}
+
+						.when {
+							color: #d0d0d0;
+							font-size: 0.75rem;
+						}
+
+						.clock_container {
+							width: 30vmin;
+							min-width: 200px;
+							margin: 1rem;
+
+							height: 30vmin;
+							min-height: 200px;
+
+							position: relative;
+
+							canvas {
+								width: 100%;
+								height: 100%;
+							}
+
+							.meridiem {
+								height: 1rem;
+								line-height: 1rem;
+								color: #d0d0d0;
+								position: absolute;
+								transform: translate3d(100%, 100%, 0);
+								bottom: 14.142135%;
+								right: 14.142135%;
+							}
+						}
+
+						.title {
+							color: #90323d;
+							font-size: 1.2rem;
+						}
+
+						.remaining {
+							color: #d0d0d0;
+							font-size: 0.75rem;
+							strong {
+								color: #71373f;
+								font-weight: inherit;
 							}
 						}
 					}
-					
-					.when {
-						color: #d0d0d0;
-						font-size: 0.75rem;
-					}
-					
-					canvas {
+
+					.subcard {
+						// TODO: Subcard
+						z-index: 9;
+						position: absolute;
+
+						top: 0;
+						left: 0;
+
 						width: 100%;
-						min-height: 200px;
-						height: 30vmin;
-					}
-					
-					.title {
-						color: #90323d;
-						font-size: 1.2rem;
-					}
-					
-					.remaining {
-						color: #d0d0d0;
-						font-size: 0.75rem;
-						strong {
-							color: #71373f;
-							font-weight: inherit;
+						height: 100%;
+
+						margin: auto;
+
+						transition: z-index 0s linear $card-swap-duration/2;
+
+						transform: scale3d(0.9, 0.9, 1) translate3d(4rem, 0, 0);
+						box-shadow: 2px 2px 6px rgba(#000, 0.2);
+
+						.hide_overlay {
+							position: absolute;
+
+							top: -1px;
+							left: -1px;
+							bottom: -1px;
+							right: -1px;
+
+							background-color: rgba(#c3bcbd, 0.65);
+							transition: background-color $card-swap-duration/3 ease-in $card-swap-duration/2;
+
+							pointer-events: auto;
+
+							img {
+								position: absolute;
+								bottom: .5rem;
+								right: .5rem;
+								width: 2rem;
+								height: 2rem;
+
+								pointer-events: inherit;
+
+								opacity: 1;
+								transition: opacity $card-swap-duration/3 ease-in $card-swap-duration/2;
+							}
 						}
-						
+
+						.map,
+						.picture {
+							position: absolute;
+
+							top: 0;
+							left: 0;
+
+							width: 100%;
+							height: 100%;
+
+							overflow: hidden;
+						}
+
+						.picture {
+							img {
+								height: 100%;
+								width: 100%;
+								object-fit: cover;
+							}
+						}
+
+						&.show {
+							z-index: 11 !important;
+							transition: z-index 0s linear $card-swap-duration/2;
+
+							animation-duration: $card-swap-duration;
+							animation-iteration-count: 1;
+							animation-timing-function: ease-in-out;
+							animation-fill-mode: forwards;
+							animation-name: subcardAnimShow;
+							animation-direction: normal;
+
+							.hide_overlay {
+								background-color: rgba(#c3bcbd, 0);
+								transition: background-color $card-swap-duration/2 ease-out;
+
+								pointer-events: none;
+
+								img {
+									opacity: 0;
+									transition: opacity $card-swap-duration/2 ease-out;
+								}
+							}
+							
+							.arrows{								
+								transition: opacity $card-swap-duration/2 ease-out;
+								opacity: 1;
+								pointer-events: auto;
+							}
+						}
+
+						&.hide {
+							z-index: 9 !important;
+							transition: z-index 0s linear $card-swap-duration/2;
+
+							animation-duration: $card-swap-duration;
+							animation-iteration-count: 1;
+							animation-timing-function: ease-in-out;
+							animation-fill-mode: forwards;
+							animation-name: subcardAnimHide;
+							animation-direction: normal !important;
+						}
+
+						.arrows {
+							position: absolute;							
+							top: 1rem;
+							right: -2rem;
+							bottom: 1rem;
+							
+							transition: opacity $card-swap-duration/3 ease-in $card-swap-duration/2;
+							opacity: 0;
+							pointer-events: none;
+							
+							width: 2rem;
+							
+							img {
+								position: absolute;
+								right: 0;
+								height: 1rem;
+								
+								&.left {
+									top: 0;
+									
+								}
+								&.right {
+									bottom: 0;
+								}
+							}
+						}
 					}
-					
 				}
 			}
 
@@ -623,9 +889,7 @@ nav {
 
 				&.show {
 					opacity: 1;
-
 					height: $indicators-size*3;
-
 					transition: opacity .15s ease-out;
 				}
 
@@ -743,5 +1007,12 @@ nav {
 				}
 			}
 		}
+	}
+}
+
+.gm-style-iw {
+	p {
+		margin-top: 1rem !important;
+		margin-bottom: 0 !important;
 	}
 }

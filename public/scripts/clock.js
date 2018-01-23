@@ -20,14 +20,14 @@ function clockGetAngleFromMinutes(minutes) {
 function clockDraw(el, now, time) {
 	var canvas = el[0];
 
-	canvas.width = canvas.offsetWidth;
-	canvas.height = canvas.offsetHeight;
+	canvas.width = canvas.offsetWidth*2;
+	canvas.height = canvas.offsetHeight*2;
 
 	var ctx = canvas.getContext("2d");
 
-	var padding = 10;
-	var centerX = canvas.offsetWidth / 2;
-	var centerY = canvas.offsetHeight / 2;
+	var padding = 0;
+	var centerX = canvas.width / 2;
+	var centerY = canvas.height / 2;
 	var minCoord = Math.min(centerX - padding, centerY - padding);
 
 	var externLineWidth = minCoord / 5;

@@ -6,7 +6,7 @@
     transform: translate3d(80%, 0, 0) !important; }
   nav.aside_open {
     transform: translate3d(80%, 0, 0) !important; }
-  #chat_messages .card {
+  #chat_messages .card_container {
     max-width: 80% !important; } }
 
 @keyframes indicatorsAnim {
@@ -16,6 +16,34 @@
   100% {
     opacity: 1;
     transform: translate3d(0, 0.35rem, 0); } }
+
+@keyframes cardAnimShow {
+  0% {
+    transform: scale3d(0.9, 0.9, 1) translate3d(-4rem, 0, 0); }
+  50% {
+    transform: scale3d(0.95, 0.95, 1) translate3d(-100%, 0, 0); }
+  100% {
+    transform: scale3d(1, 1, 1) translate3d(0, 0, 0); } }
+
+@keyframes cardAnimHide {
+  0% {
+    transform: scale3d(1, 1, 1) translate3d(0, 0, 0); }
+  100% {
+    transform: scale3d(0.9, 0.9, 1) translate3d(-4rem, 0, 0); } }
+
+@keyframes subcardAnimShow {
+  0% {
+    transform: scale3d(0.9, 0.9, 1) translate3d(4rem, 0, 0); }
+  50% {
+    transform: scale3d(0.95, 0.95, 1) translate3d(100%, 0, 0); }
+  100% {
+    transform: scale3d(1, 1, 1) translate3d(0, 0, 0); } }
+
+@keyframes subcardAnimHide {
+  0% {
+    transform: scale3d(1, 1, 1) translate3d(0, 0, 0); }
+  100% {
+    transform: scale3d(0.9, 0.9, 1) translate3d(4rem, 0, 0); } }
 
 html {
   font-size: 100% !important;
@@ -115,8 +143,8 @@ aside {
           justify-content: flex-start;
           align-items: center;
           align-content: center;
-          padding-left: 3rem;
-          padding-right: 3rem;
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
           padding-top: .75rem;
           padding-bottom: .75rem; }
           aside #aside_scroller #aside_content ul a li img {
@@ -205,6 +233,7 @@ nav {
     nav #avatar:hover {
       cursor: pointer; }
     nav #avatar img {
+      height: 100%;
       background-color: #fff;
       border: 0.2rem solid #fff;
       border-radius: 50%; }
@@ -328,49 +357,194 @@ nav {
             #body_wrapper #chat_scroller #chat_container #chat_messages .message.recv:after {
               left: 2rem;
               background-color: #f2f2f2; }
-        #body_wrapper #chat_scroller #chat_container #chat_messages .card {
+        #body_wrapper #chat_scroller #chat_container #chat_messages .card_container {
           position: relative;
-          text-align: center;
           max-width: 50%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          align-content: center;
-          background-color: #fff;
-          box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
-          padding: 0.5rem;
           margin: 0.5rem; }
-          #body_wrapper #chat_scroller #chat_container #chat_messages .card .top_right_buttons {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+          #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            align-content: center; }
-            #body_wrapper #chat_scroller #chat_container #chat_messages .card .top_right_buttons img {
-              height: 1rem;
-              margin: 0.25rem; }
-              #body_wrapper #chat_scroller #chat_container #chat_messages .card .top_right_buttons img:hover {
-                cursor: pointer; }
-          #body_wrapper #chat_scroller #chat_container #chat_messages .card .when {
-            color: #d0d0d0;
-            font-size: 0.75rem; }
-          #body_wrapper #chat_scroller #chat_container #chat_messages .card canvas {
+            align-content: center;
+            background-color: #fff;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+            padding: 0.5rem;
+            transform: scale3d(1, 1, 1) translate3d(0, 0, 0); }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .hide_overlay {
+              position: absolute;
+              top: -1px;
+              left: -1px;
+              bottom: -1px;
+              right: -1px;
+              background-color: rgba(195, 188, 189, 0);
+              pointer-events: none;
+              transition: background-color 0.35s ease-out; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .hide_overlay img {
+                position: absolute;
+                bottom: .5rem;
+                left: .5rem;
+                width: 2rem;
+                height: 2rem;
+                pointer-events: inherit;
+                opacity: 0;
+                transition: background-color 0.35s ease-out; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card.hide {
+              animation-duration: 0.7s;
+              animation-iteration-count: 1;
+              animation-timing-function: ease-in-out;
+              animation-fill-mode: forwards;
+              animation-name: cardAnimHide;
+              animation-direction: normal; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card.hide .hide_overlay {
+                pointer-events: auto;
+                background-color: rgba(195, 188, 189, 0.65);
+                transition: background-color 0.23333s ease-in 0.35s; }
+                #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card.hide .hide_overlay img {
+                  opacity: 1;
+                  transition: background-color 0.23333s ease-in 0.35s; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card.show {
+              animation-duration: 0.7s;
+              animation-iteration-count: 1;
+              animation-timing-function: ease-in-out;
+              animation-fill-mode: forwards;
+              animation-name: cardAnimShow;
+              animation-direction: normal; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .top_right_buttons {
+              position: absolute;
+              top: 0.5rem;
+              right: 0.5rem;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              align-content: center; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .top_right_buttons img {
+                height: 1.5rem;
+                margin: 0.25rem; }
+                #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .top_right_buttons img:hover {
+                  cursor: pointer; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .when {
+              color: #d0d0d0;
+              font-size: 0.75rem; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .clock_container {
+              width: 30vmin;
+              min-width: 200px;
+              margin: 1rem;
+              height: 30vmin;
+              min-height: 200px;
+              position: relative; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .clock_container canvas {
+                width: 100%;
+                height: 100%; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .clock_container .meridiem {
+                height: 1rem;
+                line-height: 1rem;
+                color: #d0d0d0;
+                position: absolute;
+                transform: translate3d(100%, 100%, 0);
+                bottom: 14.142135%;
+                right: 14.142135%; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .title {
+              color: #90323d;
+              font-size: 1.2rem; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .remaining {
+              color: #d0d0d0;
+              font-size: 0.75rem; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .card .remaining strong {
+                color: #71373f;
+                font-weight: inherit; }
+          #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard {
+            z-index: 9;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            min-height: 200px;
-            height: 30vmin; }
-          #body_wrapper #chat_scroller #chat_container #chat_messages .card .title {
-            color: #90323d;
-            font-size: 1.2rem; }
-          #body_wrapper #chat_scroller #chat_container #chat_messages .card .remaining {
-            color: #d0d0d0;
-            font-size: 0.75rem; }
-            #body_wrapper #chat_scroller #chat_container #chat_messages .card .remaining strong {
-              color: #71373f;
-              font-weight: inherit; }
+            height: 100%;
+            margin: auto;
+            transition: z-index 0s linear 0.35s;
+            transform: scale3d(0.9, 0.9, 1) translate3d(4rem, 0, 0);
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2); }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .hide_overlay {
+              position: absolute;
+              top: -1px;
+              left: -1px;
+              bottom: -1px;
+              right: -1px;
+              background-color: rgba(195, 188, 189, 0.65);
+              transition: background-color 0.23333s ease-in 0.35s;
+              pointer-events: auto; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .hide_overlay img {
+                position: absolute;
+                bottom: .5rem;
+                right: .5rem;
+                width: 2rem;
+                height: 2rem;
+                pointer-events: inherit;
+                opacity: 1;
+                transition: opacity 0.23333s ease-in 0.35s; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .map,
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .picture {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              overflow: hidden; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .picture img {
+              height: 100%;
+              width: 100%;
+              object-fit: cover; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard.show {
+              z-index: 11 !important;
+              transition: z-index 0s linear 0.35s;
+              animation-duration: 0.7s;
+              animation-iteration-count: 1;
+              animation-timing-function: ease-in-out;
+              animation-fill-mode: forwards;
+              animation-name: subcardAnimShow;
+              animation-direction: normal; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard.show .hide_overlay {
+                background-color: rgba(195, 188, 189, 0);
+                transition: background-color 0.35s ease-out;
+                pointer-events: none; }
+                #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard.show .hide_overlay img {
+                  opacity: 0;
+                  transition: opacity 0.35s ease-out; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard.show .arrows {
+                transition: opacity 0.35s ease-out;
+                opacity: 1;
+                pointer-events: auto; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard.hide {
+              z-index: 9 !important;
+              transition: z-index 0s linear 0.35s;
+              animation-duration: 0.7s;
+              animation-iteration-count: 1;
+              animation-timing-function: ease-in-out;
+              animation-fill-mode: forwards;
+              animation-name: subcardAnimHide;
+              animation-direction: normal !important; }
+            #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .arrows {
+              position: absolute;
+              top: 1rem;
+              right: -2rem;
+              bottom: 1rem;
+              transition: opacity 0.23333s ease-in 0.35s;
+              opacity: 0;
+              pointer-events: none;
+              width: 2rem; }
+              #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .arrows img {
+                position: absolute;
+                right: 0;
+                height: 1rem; }
+                #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .arrows img.left {
+                  top: 0; }
+                #body_wrapper #chat_scroller #chat_container #chat_messages .card_container .subcard .arrows img.right {
+                  bottom: 0; }
       #body_wrapper #chat_scroller #chat_container #thinking_indicators {
         display: flex;
         overflow: hidden;
@@ -459,5 +633,9 @@ nav {
           height: 1.33333rem; }
         #body_wrapper #message_container #message_button div:hover {
           cursor: pointer; }
+
+.gm-style-iw p {
+  margin-top: 1rem !important;
+  margin-bottom: 0 !important; }
 
 /*# sourceMappingURL=style.css.map */
