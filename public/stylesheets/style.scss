@@ -353,14 +353,14 @@ nav {
 
 				top: 100%;
 
-				width: 0;
-				height: 0;
-
-				// TODO: sistemare ombra delle nuvolette
-
-				margin-left: -$cloud-size/8;
-				border-left: solid $cloud-size/8 transparent;
-				border-right: solid $cloud-size/8 transparent;
+				width: $cloud-size/6;
+				height: $cloud-size/6;
+				
+				transform-origin:50% 50%;
+				transform: rotate(45deg);
+				
+				margin-top: -$cloud-size/12;
+				box-shadow: 1.75px 1.75px 2px rgba(#000, 0.2);
 			}
 
 			&.sent {
@@ -370,7 +370,7 @@ nav {
 
 				&:after{
 					right: $cloud-size/2;
-					border-top: solid $cloud-size/8 #dbcacc;
+					background-color: #dbcacc;
 				}
 			}
 
@@ -381,7 +381,7 @@ nav {
 
 				&:after{
 					left: $cloud-size/2;
-					border-top: solid $cloud-size/8 #f2f2f2;
+					background-color: #f2f2f2;
 				}
 			}
 		}
