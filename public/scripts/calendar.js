@@ -33,16 +33,36 @@ function calendarDraw(el, now, time, viewMonth, viewYear) {
 	code += '<div class="row">';
 	var dayWeekIndex = (new Date(viewYear, viewMonth, 1)).getDay();
 	for (var i = 0; i < dayWeekIndex; i++)
-		code += '<div></div>';
+		code += '<div class="no_day"></div>';
 
+	var started = false;
 	for (var i = 1, days = monthDays(viewMonth, viewYear); i <= days; i++) {
 		var thatDay = new Date(viewYear, viewMonth, i);
-		if (isSameDay(now, thatDay))
+		if (isSameDay(now, thatDay)) {
+			started = true;
 			code += '<div class="start bar_remaining">';
-		else if (isSameDay(time, thatDay))
+		}
+		else if (isSameDay(time, thatDay)) {
+			started = false;
 			code += '<div class="end bar_remaining">';
-		else if (now < thatDay && thatDay < time)
-			code += '<div class="bar_remaining">';
+		}
+		else if (now < thatDay && thatDay < time) {
+			if(i === days) {
+				if(started)
+					code += '<div class="bar_remaining no_right">';			
+				else {
+					started = true;
+					code += '<div class="bar_remaining no_left no_right">';				
+				}				
+			} else{
+				if(started)
+					code += '<div class="bar_remaining">';
+				else {
+					started = true;
+					code += '<div class="bar_remaining no_left">';				
+				}
+			}
+		}
 		else
 			code += '<div>';
 
@@ -54,7 +74,7 @@ function calendarDraw(el, now, time, viewMonth, viewYear) {
 	}
 	if (dayWeekIndex > 0) {
 		for (var i = dayWeekIndex; i < 7; i++)
-			code += '<div></div>';
+			code += '<div class="no_day"></div>';
 	}
 	code += '</div>';
 

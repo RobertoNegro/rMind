@@ -334,7 +334,14 @@ nav {
           min-width: 60px;
           border-radius: 0.5rem;
           padding: 0.5rem;
-          margin: 0.5rem 1rem; }
+          margin: 0.5rem 1rem;
+          transform: translate3d(0, 0, 0);
+          opacity: 1;
+          transition: transform .15s ease-in, opacity 0.15s ease-in; }
+          #body_wrapper #chat_scroller #chat_container #chat_messages .message.hide {
+            opacity: 0;
+            transform: translate3d(0, 100%, 0);
+            transition: transform .15s ease-out, opacity 0.15s ease-out; }
           #body_wrapper #chat_scroller #chat_container #chat_messages .message:after {
             content: '';
             position: absolute;
@@ -362,7 +369,14 @@ nav {
           overflow: hidden;
           width: 100%;
           margin-left: -0.5rem;
-          margin-right: -0.5rem; }
+          margin-right: -0.5rem;
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+          transition: transform .25s ease-in, opacity .25s ease-in; }
+          #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper.hide {
+            transform: translate3d(0, 100%, 0);
+            opacity: 0;
+            transition: transform .25s ease-out, opacity .25s ease-out; }
           #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container {
             position: relative;
             max-width: 50%;
@@ -733,7 +747,7 @@ nav {
     flex-wrap: nowrap;
     background-color: #f8f8f8;
     color: #b7b7b7;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: bold; }
     .calendar .day_names div {
       width: 14.28571%; }
@@ -780,6 +794,13 @@ nav {
         color: #aaa;
         font-size: 0.8rem;
         border: 2px solid #f3f3f3; }
+        .calendar .rows .row div.no_day:before {
+          content: '';
+          display: block;
+          background-color: #eee;
+          height: 2px;
+          width: 100%;
+          transform: rotate(45deg); }
         .calendar .rows .row div:first-child {
           border-left: none; }
           .calendar .rows .row div:first-child.bar_remaining:before {
@@ -802,6 +823,10 @@ nav {
             height: 60%;
             margin: auto;
             background-color: #90323d; }
+          .calendar .rows .row div.bar_remaining.no_left:before {
+            left: 0 !important; }
+          .calendar .rows .row div.bar_remaining.no_right:before {
+            right: 0 !important; }
           .calendar .rows .row div.bar_remaining.start:after {
             z-index: -1;
             content: '';

@@ -43,30 +43,11 @@ function refreshSendVoiceButtons() {
 }
 
 function addMessage(text, type) {
-	var el = $('<div class="message ' + type + '">' + text + '</div>').appendTo('#chat_messages');
-
-	var autoHeight = el.height();
-	var curMinHeight = el.css('min-height');
-	var curPaddingTop = el.css('padding-top');
-	var curPaddingBottom = el.css('padding-bottom');
-	var curColor = el.css('color');
-
-	el.css({
-		'height': '0px',
-		'min-height': '0px',
-		'padding-top': '0rem',
-		'padding-bottom': '0rem',
-		'opacity': '0',
-		'color': 'rgba(0, 0, 0, 0)'
-	}).animate({
-		'height': autoHeight,
-		'min-height': curMinHeight,
-		'padding-top': curPaddingTop,
-		'padding-bottom': curPaddingBottom,
-		'opacity': '1',
-		'color': curColor
-	}, 250, 'swing');
-
+	var el = $('<div class="message ' + type + ' hide">' + text + '</div>').appendTo('#chat_messages');
+	el.css('transform');
+	
+	el.toggleClass('hide', false);
+	
 	scrollToBottom();
 }
 
@@ -81,7 +62,9 @@ function addRecvMessage(text) {
 function sendMessage() {
 	var text = $('#message_input').val();
 	$('#message_input').val('');
-	addSendMessage(text);
+
+	autosize.update($('#message_input').get(0));
+	addSendMessage(text.replace(/\r/g, '').replace(/\n/g, '<br/>'));
 
 	isThinking(true);
 }

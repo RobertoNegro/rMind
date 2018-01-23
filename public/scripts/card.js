@@ -8,31 +8,35 @@ function diffMinutes(date) {
 function switchCard(selector, showSub) {
 	if (!$(selector + ' > .subcard').hasClass('animated') && !$(selector + ' > .card').hasClass('animated')) {
 		if (showSub) {
-			$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
-			$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+			if (!$(selector + ' > .card').hasClass('hide')) {
+				$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+				$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 
-			$(selector + ' > .subcard').toggleClass('hide', false).toggleClass('show', true).toggleClass('animated', true);
-			$(selector + ' > .subcard').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
-				$(selector + ' > .subcard').toggleClass('animated', false);
-			});
+				$(selector + ' > .subcard').toggleClass('hide', false).toggleClass('show', true).toggleClass('animated', true);
+				$(selector + ' > .subcard').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+					$(selector + ' > .subcard').toggleClass('animated', false);
+				});
 
-			$(selector + ' > .card').stop(true, true).toggleClass('show', false).toggleClass('hide', true).toggleClass('animated', true);
-			$(selector + ' > .card').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
-				$(selector + ' > .card').toggleClass('animated', false);
-			});
+				$(selector + ' > .card').stop(true, true).toggleClass('show', false).toggleClass('hide', true).toggleClass('animated', true);
+				$(selector + ' > .card').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+					$(selector + ' > .card').toggleClass('animated', false);
+				});
+			}
 		} else {
-			$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
-			$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+			if ($(selector + ' > .subcard').hasClass('show')) {
+				$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
+				$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 
-			$(selector + ' > .subcard').stop(true, true).toggleClass('show', false).toggleClass('hide', true).toggleClass('animated', true);
-			$(selector + ' > .subcard').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
-				$(selector + ' > .subcard').toggleClass('animated', false);
-			});
+				$(selector + ' > .subcard').stop(true, true).toggleClass('show', false).toggleClass('hide', true).toggleClass('animated', true);
+				$(selector + ' > .subcard').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+					$(selector + ' > .subcard').toggleClass('animated', false);
+				});
 
-			$(selector + ' > .card').stop(true, true).toggleClass('hide', false).toggleClass('show', true).toggleClass('animated', true);
-			$(selector + ' > .card').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
-				$(selector + ' > .card').toggleClass('animated', false);
-			});
+				$(selector + ' > .card').stop(true, true).toggleClass('hide', false).toggleClass('show', true).toggleClass('animated', true);
+				$(selector + ' > .card').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function () {
+					$(selector + ' > .card').toggleClass('animated', false);
+				});
+			}
 		}
 	}
 }
@@ -89,7 +93,7 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 	}
 
 	code =
-		'<div class="card_wrapper">' +
+		'<div class="card_wrapper hide">' +
 		'<div class="card_container" id="card_' + id + '">' +
 		'<div class="card">' +
 		'<div class="top_right_buttons">' +
@@ -144,11 +148,15 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 	}
 
 	prepareCard('#card_' + id, date);
+
+
+	var el = $('#card_' + id).parent('.card_wrapper');
+	el.css('transform');
+	el.toggleClass('hide', false);
+	scrollToBottom();
 }
 
 function prepareCard(selector, date) {
-
-
 	// selectable subcard
 	$(selector + ' > .subcard > .hide_overlay').on('click', function () {
 		switchCard(selector, true);
@@ -185,6 +193,28 @@ function prepareCard(selector, date) {
 
 	// time
 	$(selector + ' > .card > .when > .time').text("at " + (date.getHours() > 12 ? date.getHours() - 12 : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + " " + (date.getHours() >= 12 ? 'pm' : 'am'));
+
+	//  gesture
+	var manager = new Hammer.Manager($(selector).parent('.card_wrapper').get(0));
+	manager.add(new Hammer.Pan({
+		domEvents: true,
+		threshold: 10
+	}));
+
+	manager.on('pan', function (e) {
+		if ($(e.target).is('.map') || $(e.target).parents('.map').length > 0) {
+			manager.stop();
+		} else {
+			switch (e.additionalEvent) {
+				case 'panleft':
+					switchCard(selector, true);
+					break;
+				case 'panright':
+					switchCard(selector, false);
+					break;
+			}
+		}
+	});
 
 	updateCard(selector, date);
 	setTimeout(function () {
