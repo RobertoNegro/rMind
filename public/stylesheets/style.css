@@ -370,6 +370,7 @@ nav {
           width: 100%;
           margin-left: -0.5rem;
           margin-right: -0.5rem;
+          touch-action: auto !important;
           opacity: 1;
           transform: translate3d(0, 0, 0);
           transition: transform .25s ease-in, opacity .25s ease-in; }

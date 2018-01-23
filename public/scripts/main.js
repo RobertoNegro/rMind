@@ -1,12 +1,13 @@
 var hasToResetFullscreen = false;
 
 $(document).ready(function () {
-	$('img').on('dragstart', function (event) {
+	$(document).on('dragstart', 'img', function (event) {
 		event.preventDefault();
 	});
 
 	autosize($('textarea'));
-
+	
+	new SimpleBar($('#aside_scroller')[0]);
 	prepareScrollbar();
 	scrollToBottom();
 

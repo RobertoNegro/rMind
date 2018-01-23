@@ -1,9 +1,9 @@
 var scrollbar;
 
 function prepareScrollbar() {
-	new SimpleBar($('#aside_scroller')[0]);
 	scrollbar = (new SimpleBar($('#chat_scroller')[0])).getScrollElement();
 	scrollbar.addEventListener('scroll', function (event) {
+		//console.log(event);
 		var element = event.target;
 		if (element.scrollHeight - element.scrollTop === element.clientHeight) {
 			$('#bottom_button').toggleClass('show', false);

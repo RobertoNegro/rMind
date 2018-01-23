@@ -6,9 +6,10 @@ function diffMinutes(date) {
 }
 
 function switchCard(selector, showSub) {
-	if (!$(selector + ' > .subcard').hasClass('animated') && !$(selector + ' > .card').hasClass('animated')) {
-		if (showSub) {
-			if (!$(selector + ' > .card').hasClass('hide')) {
+
+	if (showSub) {
+		if (!$(selector + ' > .card').hasClass('hide')) {
+			if (!$(selector + ' > .subcard').hasClass('animated') && !$(selector + ' > .card').hasClass('animated')) {
 				$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 				$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 
@@ -22,8 +23,12 @@ function switchCard(selector, showSub) {
 					$(selector + ' > .card').toggleClass('animated', false);
 				});
 			}
-		} else {
-			if ($(selector + ' > .subcard').hasClass('show')) {
+		}
+		
+		return $(selector + ' > .card').hasClass('hide');		
+	} else {
+		if ($(selector + ' > .subcard').hasClass('show')) {
+			if (!$(selector + ' > .subcard').hasClass('animated') && !$(selector + ' > .card').hasClass('animated')) {
 				$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 				$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 
@@ -37,8 +42,12 @@ function switchCard(selector, showSub) {
 					$(selector + ' > .card').toggleClass('animated', false);
 				});
 			}
+			
+			return !$(selector + ' > .subcard').hasClass('show');
 		}
 	}
+
+	return false;
 }
 
 function nextSubcard(selector) {
@@ -78,20 +87,20 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 
 	if (links && links.length > 0) {
 		for (var i = 0, len = links.length; i < len; i++) {
-			subcard += '<div style="left: ' + (subcardCount - subcardIndex)*10 + 'px; top: ' + (subcardCount - subcardIndex)*5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex)*5 + 'px" id="link_' + id + '_' + i + '" class="link"><a target="_blank" href="' + links[i].url + '">' + links[i].desc + '</a></div>';
+			subcard += '<div style="left: ' + (subcardCount - subcardIndex) * 10 + 'px; top: ' + (subcardCount - subcardIndex) * 5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex) * 5 + 'px" id="link_' + id + '_' + i + '" class="link"><a target="_blank" href="' + links[i].url + '">' + links[i].desc + '</a></div>';
 			subcardIndex++;
 		}
 
 	}
 	if (pictures && pictures.length > 0) {
-		for (var i = 0, len = pictures.length; i < len; i++) {			
-			subcard += '<div style="left: ' + (subcardCount - subcardIndex)*10 + 'px; top: ' + (subcardCount - subcardIndex)*5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex)*5 + 'px" id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">' + pictures[i].desc + '</span></div>';
+		for (var i = 0, len = pictures.length; i < len; i++) {
+			subcard += '<div style="left: ' + (subcardCount - subcardIndex) * 10 + 'px; top: ' + (subcardCount - subcardIndex) * 5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex) * 5 + 'px" id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">' + pictures[i].desc + '</span></div>';
 			subcardIndex++;
 		}
 	}
 	if (maps && maps.length > 0) {
 		for (var i = 0, len = maps.length; i < len; i++) {
-			subcard += '<div style="left: ' + (subcardCount - subcardIndex)*10 + 'px; top: ' + (subcardCount - subcardIndex)*5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex)*5 + 'px" class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">' + maps[i].desc + '</span></div>';
+			subcard += '<div style="left: ' + (subcardCount - subcardIndex) * 10 + 'px; top: ' + (subcardCount - subcardIndex) * 5 + 'px; right: ' + (subcardIndex * 10) + 'px; bottom: ' + (subcardCount - subcardIndex) * 5 + 'px" class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">' + maps[i].desc + '</span></div>';
 			subcardIndex++;
 		}
 	}
@@ -213,19 +222,24 @@ function prepareCard(selector, date) {
 	var manager = new Hammer.Manager($(selector).parent('.card_wrapper').get(0));
 	manager.add(new Hammer.Pan({
 		domEvents: true,
-		threshold: 10,		
+		threshold: 10,
+		touchAction: 'auto'
 	}));
 
-	manager.on('pan', function (e) {		
+	manager.on('panleft panright', function (e) {
 		if ($(e.target).is('.map') || $(e.target).parents('.map').length > 0 || $(e.target).is('.arrows > img') || $(e.target).parents('.arrows > img').length > 0) {
 			manager.stop();
 		} else {
 			switch (e.additionalEvent) {
 				case 'panleft':
 					switchCard(selector, true);
+					manager.stop();
 					break;
 				case 'panright':
-					switchCard(selector, false);
+					if (!switchCard(selector, false)) {						
+						openAside();
+					}
+					manager.stop();
 					break;
 			}
 		}

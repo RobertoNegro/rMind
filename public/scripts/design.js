@@ -40,10 +40,11 @@ function addAsidePanFunctionality(elements, excluded) {
 	for (var i = 0; i < len; i++) {
 		managers[i].add(new Hammer.Pan({
 			domEvents: true,
-			threshold: 10
+			threshold: 10,		
+			touchAction: 'auto'
 		}));
 
-		managers[i].on('pan', function (e) {
+		managers[i].on('panleft panright', function (e) {
 			if (isExcluded(e.target)) {
 				for (var j = 0; j < len; j++)
 					managers[j].stop();
