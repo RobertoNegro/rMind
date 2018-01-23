@@ -5,15 +5,19 @@
 	<title>rMind</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-
-	<link rel='stylesheet'href='/stylesheets/bootstrap-reboot.min.css' />
+	<meta name="mobile-web-app-capable" content="yes">
+	
 	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' />
-
+	<link rel='stylesheet'href='/stylesheets/bootstrap-reboot.min.css' />
+	<link rel="stylesheet" href="/stylesheets/simplebar.css" />	
 	<link rel='stylesheet' href='/stylesheets/style.css' />
 
 	<script src="/scripts/jquery-3.2.1.min.js"></script>
-	<script src="/scripts/autosize.min.js"></script>
+	<script src="/scripts/autosize-4.0.0.min.js"></script>	
+	<script src="/scripts/simplebar.js"></script>
+	<script src="/scripts/screenfull.min.js"></script>
+	<script src="/scripts/jquery.touchSwipe.min.js"></script>
+	
 	<script src="/scripts/main.js"></script>
 </head>
 
@@ -44,6 +48,7 @@
 		<hr />
 		<ul>
 			<a href="#" class="nostyle"><li><img src="/images/aside/info.png"><div>Informazioni</div></li></a>
+			<a href="#" onClick="toggleFullscreen()" class="nostyle"><li><img src="/images/aside/fullscreen.png"><div>Schermo intero</div></li></a>
 		</ul>
 
 		<div id="aside_footer">
@@ -51,7 +56,8 @@
 			<span id="smaller">(#178932 - Università degli Studi di Trento - a.a. 2017/18)</span>
 		</div>
 	</aside>
+	
+	<div id="darker_overlay" onClick="closeAside()"></div>
 
 	<div id="body_wrapper">
-	<div id="chat_container">
 

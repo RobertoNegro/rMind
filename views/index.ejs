@@ -1,8 +1,49 @@
 <% include header.ejs %>
 
-<div class="message recv">Welcome to rMind!</div>
-<div class="message recv">How can I help you?</div>
-<div class="message sent">What to do this week?</div>
-<div class="message recv">Checking..</div>
+	
+	<div id="chat_scroller">
+		<div class="floating_button" id="bottom_button" onClick="scrollToBottom()"><img src="/images/bottom_button.png"></div>
+		
+		<div id="chat_container">
+			<div class="message recv">Welcome to rMind!</div>
+			<div class="message recv">How can I help you?</div>
+			<div class="message sent">What to do this week?</div>
+			<div class="message recv">Checking..</div>
+			<div class="message sent">Meanwhile, i'm testing the design with a little more of text.</div>
+			<div class="message recv">Welcome to rMind!</div>
+			<div class="message recv">How can I help you?</div>
+			<div class="message sent">What to do this week?</div>
+			<div class="message recv">Checking..</div>
+			<div class="message sent">Meanwhile, i'm testing the design with a little more of text.</div>
+			<div class="message recv">Welcome to rMind!</div>
+			<div class="message recv">How can I help you?</div>
+			<div class="message sent">What to do this week?</div>
+			<div class="message recv">Checking..</div>
+			<div class="message sent">Meanwhile, i'm testing the design with a little more of text.</div>
+			<div class="message recv">Welcome to rMind!</div>
+			<div class="message recv">How can I help you?</div>
+			<div class="message sent">What to do this week?</div>
+			<div class="message recv">Checking..</div>
+			<div class="message sent">Meanwhile, i'm testing the design with a little more of text.</div>
+			<div class="message recv">Welcome to rMind!</div>
+			<div class="message recv">How can I help you?</div>
+			<div class="message sent">What to do this week?</div>
+			<div class="message recv">Checking..</div>
+			<div class="message sent">Meanwhile, i'm testing the design with a little more of text.</div>
 
-<% include footer.ejs %>
+			<div id="thinking_indicators" class="">
+				<div class="indicator"></div>
+				<div class="indicator"></div>
+				<div class="indicator"></div>
+			</div>
+
+		</div>
+	</div>
+
+	<div id="message_container">
+		<textarea class='autoExpand' id="message_input" placeholder="Scrivi un messaggio" rows='1'></textarea>
+		<img id="send_button" src="/images/send_button.png" />
+	</div>
+
+
+	<% include footer.ejs %>

@@ -10,6 +10,11 @@ $message-color: #f2f2f2;
 
 $aside-color: #553034;
 
+$float-button-size: 3rem;
+
+$indicators-size: .7rem;
+$indicators-anim-duration: .6s;
+
 @media screen and (max-width:800px) {
 	aside {
 		width: 80% !important;
@@ -29,6 +34,15 @@ $aside-color: #553034;
 	}
 }
 
+@keyframes indicatorsAnim {
+	0% {
+		transform: translate3d(0, -$indicators-size/4, 0);
+	}
+	100% {
+		transform: translate3d(0, +$indicators-size/4, 0);
+	}
+}
+
 html {
 	font-size: 100% !important;
 	overflow-x: hidden;
@@ -38,7 +52,7 @@ body {
 	position: absolute;
 	left: 0;
 	top: 0;
-	width:100%;
+	width: 100%;
 	bottom: 0;
 
 	background-color: $background-color;
@@ -52,31 +66,9 @@ body {
 
 	transition: left 0.3s ease-in;
 
-	&:before {
-		z-index: 1001;
-		position: fixed;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		right: 0;
-
-		content: '';
-		background-color: #000;
-
-		transition: opacity 0.15s ease-in;
-		opacity: 0;
-		pointer-events: none;
-	}
-
 	&.aside_open {
 		left: 35%;
 		transition: left 0.3s ease-out;
-
-		&:before {
-			opacity: 0.70;
-			pointer-events: auto;
-			transition: opacity 0.15s ease-out;
-		}
 	}
 }
 
@@ -299,13 +291,39 @@ nav {
 	}
 
 	#avatar {
+		&:hover {cursor: pointer}
+		
 		padding-top: $header-height/12;
 		padding-bottom: $header-height/12;
+		
+		
 		img {
 			background-color: #fff;
 			border: 0.2rem solid #fff;
 			border-radius: 50%;
 		}
+	}
+}
+
+#darker_overlay {
+	z-index: 1001;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+
+	content: '';
+	background-color: #000;
+
+	transition: opacity 0.15s ease-in;
+	opacity: 0;
+	pointer-events: none;
+
+	&.aside_open {
+		opacity: 0.70;
+		pointer-events: auto;
+		transition: opacity 0.15s ease-out;
 	}
 }
 
@@ -316,76 +334,179 @@ nav {
 	bottom: 0;
 	width: 100%;
 
+	overflow: hidden;
+
 	display: flex;
 	flex-direction: column;
 
-	#chat_container {
-		overflow-y: auto;
+	#chat_scroller {
+		position: relative;
+		overflow: hidden;
+
 		width: 100%;
 		flex: 1;
 
-		padding:  $cloud-size/8;
-
-		display:flex;
-		flex-direction: column;
-  	justify-content: flex-start;
-  	align-items: center;
-
-		.message {
-			display:inline-block;
-    	position:relative;
-
-			color: rgba(#000, 0.6);
-
-			box-shadow: 1px 1px 2px rgba(#000, 0.2);
-
-			width:auto;
-
-			border-radius: $cloud-size/8;
-			font-size: $cloud-size/4;
-			padding: $cloud-size/8;
-			margin:  $cloud-size/8;
-
-			&:after{
-				content:'';
-
-				position: absolute;
-
-				top: 100%;
-
-				width: $cloud-size/6;
-				height: $cloud-size/6;
-				
-				transform-origin:50% 50%;
-				transform: rotate(45deg);
-				
-				margin-top: -$cloud-size/12;
-				box-shadow: 1.75px 1.75px 2px rgba(#000, 0.2);
+		.floating_button {
+			position: absolute;
+			z-index: 999;
+			
+			width: 0;
+			height: 0;
+			padding: 0;
+			margin: 0;
+			
+			transition: width 0.25s ease-in, height 0.25s ease-in, padding 0.25s ease-in, margin 0.25s ease-in;
+			
+			background-color: #f2f2f2;
+			border-radius: 50%;
+			
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			align-content: center;
+			
+			box-shadow: 2px 2px 4px rgba(#000, 0.2);
+			
+			&:hover {
+				cursor: pointer;
+			}
+			
+			img {
+				height: 100%;
 			}
 
-			&.sent {
-				background-color: #dbcacc;
-				text-align: right;
-				align-self: flex-end;
+			&#bottom_button {
+				top: $cloud-size/4 + $float-button-size/2;
+				right: $cloud-size/4 + $float-button-size/2;
+			
+				
+				&.show{
+					margin-top: -$float-button-size/2;
+					margin-right: -$float-button-size/2;
+				}
+			}
+			
+			&.show{
+				width: $float-button-size;
+				height: $float-button-size;			
+				padding: $float-button-size/4;
+				
+				transition: width 0.25s ease-out, height 0.25s ease-out, padding 0.25s ease-out, margin 0.25s ease-out;
+			
+			}
+		}
+		
 
-				&:after{
-					right: $cloud-size/2;
+
+		#chat_container {
+			position: relative;
+			width: 100%;
+
+			padding: $cloud-size/8;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: center;
+
+
+			.message {
+				display: inline-block;
+				position: relative;
+				text-align: left;
+
+				color: rgba(#000, 0.6);
+
+				box-shadow: 1px 1px 2px rgba(#000, 0.2);
+
+				width: auto;
+
+				border-radius: $cloud-size/8;
+				font-size: $cloud-size/4;
+				padding: $cloud-size/8;
+				margin: $cloud-size/8;
+
+				&:after {
+					content: '';
+
+					position: absolute;
+
+					top: 100%;
+
+					width: $cloud-size/6;
+					height: $cloud-size/6;
+
+					transform-origin: 50% 50%;
+					transform: rotate(45deg);
+
+					margin-top: -$cloud-size/11;
+					box-shadow: 1.75px 1.75px 2px rgba(#000, 0.2);
+				}
+
+				&.sent {
 					background-color: #dbcacc;
+					align-self: flex-end;
+
+					&:after {
+						right: $cloud-size/2;
+						background-color: #dbcacc;
+					}
+				}
+
+				&.recv {
+					background-color: #f2f2f2;
+					align-self: flex-start;
+
+					&:after {
+						left: $cloud-size/2;
+						background-color: #f2f2f2;
+					}
 				}
 			}
 
-			&.recv {
-				background-color: #f2f2f2;
-				text-align: left;
-				align-self: flex-start;
+			#thinking_indicators {
+				display: none;
 
-				&:after{
-					left: $cloud-size/2;
-					background-color: #f2f2f2;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+
+				margin-top: $indicators-size;
+
+				&.show {
+					display: flex;
+				}
+
+				.indicator {
+					position: relative;
+
+					animation-name: indicatorsAnim;
+					animation-duration: $indicators-anim-duration;
+					animation-iteration-count: infinite;
+					animation-direction: alternate;
+					animation-timing-function: ease-in-out;
+
+					&:nth-child(1) {
+						animation-delay: -0s;
+					}
+
+					&:nth-child(2) {
+						animation-delay: -$indicators-anim-duration/3;
+					}
+
+					&:nth-child(3) {
+						animation-delay: -2*$indicators-anim-duration/3;
+					}
+
+					margin: $indicators-size;
+					background-color: #674f52;
+					border-radius: 50%;
+					height: $indicators-size;
+					width: $indicators-size;
 				}
 			}
 		}
-
 	}
 
 	#message_container {
@@ -404,11 +525,11 @@ nav {
 		align-items: center;
 		align-content: center;
 
+
 		textarea {
 			resize: none;
 			display: block;
-  		overflow: hidden;
-
+			overflow: hidden;
 
 			flex: 1;
 
@@ -424,7 +545,6 @@ nav {
 
 			font-size: $message-height/4;
 			padding: $message-height/4;
-
 
 			margin-top: $message-height/8;
 			margin-left: $message-height/8;
@@ -442,9 +562,8 @@ nav {
 			margin-right: $message-height/3;
 
 			&:hover {
-				cursor:pointer;
+				cursor: pointer;
 			}
 		}
-
 	}
 }
