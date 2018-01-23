@@ -132,15 +132,17 @@ jQuery.fn.extend({
 		var el = $(this[0]);
 		var now = new Date();
 
-
 		$(window).on('resize', function (e) {
 			clockDraw(el, now, time);
 		});
 		
 		clockDraw(el, now, time);
-		setTimeout(function() {
+		setTimeout(function() {			
+			now = new Date();
 			clockDraw(el, now, time);
+			
 			setInterval(function () {
+				now = new Date();
 				clockDraw(el, now, time);
 			}, 60000);
 		}, 1000*(60 - (new Date()).getSeconds()));

@@ -33,11 +33,11 @@ $(document).ready(function () {
 	});
 	refreshSendVoiceButtons();
 
-	var coords = getCoordsFromAddress('Via Liguria, 1, Arzignano', function (err, location) {
+	var coords = getCoordsFromAddress('Centro commerciale palladio', function (err, location) {
 		if(err)
 			console.log(err);
 		else {
-			addRecvCard("aa", new Date(2018, 0, 5, 15, 41, 0, 0), "Dinner with colleagues", [ location ], [{ path: 'https://fimgs.net/images/secundar/o.44140.jpg', desc:'Il profumo che vuole'}], [{ url: 'http://www.google.it', desc:'Gooogle' }]);
+			addRecvCard("aa", new Date(2018, 1, 19, 15, 41, 0, 0), "Buy a gift for Alice from Sephora", [ location ], [{ path: 'https://fimgs.net/images/secundar/o.44140.jpg', desc:'Il profumo che vuole'}], [{ url: 'http://www.gioia.it/bellezza/profumi/consigli/g3329/profumi-inverno-2018-novita/', desc:'Profumi 2018 novità' }]);
 		}
 	});
 });

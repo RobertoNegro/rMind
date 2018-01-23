@@ -1,6 +1,3 @@
-var monthNames = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-var dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-
 function diffMinutes(date) {
 	var now = new Date();
 	var diff = date - now;
@@ -60,9 +57,10 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 	var diff = diffMinutes(date);
 	var code;
 
-	var subcard = '';
+
 	if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
-		subcard += '<div class="subcard">' +
+		subcard =
+			'<div class="subcard">' +
 			'<div class="content_container">';
 	}
 
@@ -72,11 +70,11 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 	}
 	if (pictures && pictures.length > 0) {
 		for (var i = 0, len = pictures.length; i < len; i++)
-			subcard += '<div id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">'+pictures[i].desc+'</span></div>';
+			subcard += '<div id="picture_' + id + '_' + i + '" class="picture"><img alt="' + pictures[i].desc + '" title="' + pictures[i].desc + '" src="' + pictures[i].path + '" /><span class="desc">' + pictures[i].desc + '</span></div>';
 	}
 	if (maps && maps.length > 0) {
 		for (var i = 0, len = maps.length; i < len; i++)
-			subcard += '<div class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">'+maps[i].desc+'</span></div>';
+			subcard += '<div class="map"><div class="gmap" id="map_' + id + '_' + i + '"></div><span class="desc">' + maps[i].desc + '</span></div>';
 	}
 
 	if ((maps && maps.length > 0) || (pictures && pictures.length > 0) || (links && links.length > 0)) {
@@ -105,9 +103,8 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 		'<div class="indicator_container">';
 
 	if (diff < 0) {
-		console.warn("Adding an old reminder!");
 		code +=
-			'<img src="/images/toolate.png" alt="Too late!" title="Too late!" />';
+			'<img class="toolate" src="/images/toolate.png" alt="Too late!" title="Too late!" />';
 	} else if (diff < 60 * 12) {
 		code +=
 			'<canvas class="clock"></canvas>' +
@@ -117,7 +114,7 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 			'<div class="calendar"></div>';
 	}
 
-	code +=		
+	code +=
 		'</div>' +
 		'<div class="title">' + title + '</div>' +
 		'<div class="remaining">remaining <strong>N/A</strong> time</div>' +
@@ -173,9 +170,14 @@ function prepareCard(selector, date) {
 	});
 
 	// clock
-	if ($(selector + ' > .card > .clock_container').length > 0) {
-		$(selector + ' > .card > .clock_container > .clock').clock(date);
-		$(selector + ' > .card > .clock_container > .meridiem').text((date.getHours() >= 12 ? 'PM' : 'AM'));
+	if ($(selector + ' > .card > .indicator_container > .clock').length > 0) {
+		$(selector + ' > .card > .indicator_container > .clock').clock(date);
+		$(selector + ' > .card > .indicator_container > .meridiem').text((date.getHours() >= 12 ? 'PM' : 'AM'));
+	}
+
+	// calendar
+	if ($(selector + ' > .card > .indicator_container > .calendar').length > 0) {
+		$(selector + ' > .card > .indicator_container > .calendar').calendar(date);
 	}
 
 	// date
