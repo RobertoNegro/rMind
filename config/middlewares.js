@@ -1,16 +1,22 @@
 var jwt = require('jsonwebtoken');
 var constants = require('./constants');
 
-function verifyToken(req, res, next) {
-  var token = req.headers['x-access-token'];
+function getToken(req) {
+	var token = req.cookies.token;
 	if(!token)
-		token = res.cookies.token;
+		token = req.headers['x-access-token'];
 	if(!token)
 		token = req.query.token;
 	if(!token)
 		token = req.body.token;
 	if(!token)
 		token = req.param.token;
+	
+	return token;
+}
+
+function verifyToken(req, res, next) {
+  var token = getToken(req);
 	
   if (!token)
     return res.status(403).send({ error: true, message: 'No token provided.' });
@@ -24,4 +30,5 @@ function verifyToken(req, res, next) {
   });
 }
 
+module.exports.getToken = getToken;
 module.exports.verifyToken = verifyToken;

@@ -4,5 +4,6 @@ module.exports = {
 	'lastAPIVersion' : 'v1',
 	'lastWebhookVersion' : 'v1',
 	'dialogFlowURL' : 'https://api.dialogflow.com/v1/query/?v=20170712',
+ 	
 	'rMindURL' : 'https://rmind.herokuapp.com/'
 };
