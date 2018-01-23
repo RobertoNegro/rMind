@@ -75,6 +75,11 @@ function sendMessage() {
 		url: url,
 		success: function (result, status) {
 			addRecvMessage(result.result.fulfillment.speech);
+			var cards = JSON.parse(result.result.fulfillment.data);
+			if(cards && cards.length > 0) 
+				for(var i = 0, len = cards.length; i < len; i++)
+					addRecvCard(cards[i]);
+			
 			waitingResponses--;
 			if(waitingResponses <= 0) {
 				isThinking(false);

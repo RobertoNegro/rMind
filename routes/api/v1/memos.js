@@ -16,6 +16,10 @@ router.post('/', middlewares.verifyToken, function (req, res) {
 	console.log("Creating memo");
 	
 	var dateS = req.body.date;
+	
+	if(dateS.indexOf('/') >= 0)
+		dateS = dateS.substring(0, dateS.indexOf('/'));
+	
 	var date = new Date(dateS);
 	
 	if(dateS.indexOf('T') < 0)

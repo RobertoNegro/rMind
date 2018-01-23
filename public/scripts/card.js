@@ -6,9 +6,8 @@ function diffMinutes(date) {
 }
 
 function switchCard(selector, showSub) {
-
 	if (showSub) {
-		if (!$(selector + ' > .card').hasClass('hide')) {
+		if (!$(selector + ' > .card').hasClass('hide') && $(selector + ' > .subcard').length > 0) {
 			if (!$(selector + ' > .subcard').hasClass('animated') && !$(selector + ' > .card').hasClass('animated')) {
 				$(selector + ' > .subcard').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
 				$(selector + ' > .card').unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd").stop(true, true).toggleClass('animated', false);
@@ -66,7 +65,14 @@ function prevSubcard(selector) {
 	}
 }
 
-function addRecvCard(id, date, title, maps, pictures, links) {
+function addRecvCard(card) {
+	var id = card._id;
+	var date = new Date(card.date);
+	var title = card.text;
+	var maps = card.location;
+	var pictures = card.photo;
+	var links = card.link;
+	
 	var diff = diffMinutes(date);
 	var code;
 
@@ -79,6 +85,8 @@ function addRecvCard(id, date, title, maps, pictures, links) {
 	if (links && links.length > 0)
 		subcardCount += links.length;
 
+	var subcard = "";
+	
 	if (subcardCount > 0) {
 		subcard =
 			'<div class="subcard">' +
