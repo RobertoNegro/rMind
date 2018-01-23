@@ -20,8 +20,8 @@ function clockGetAngleFromMinutes(minutes) {
 function clockDraw(el, now, time) {
 	var canvas = el[0];
 
-	canvas.width = canvas.offsetWidth*2;
-	canvas.height = canvas.offsetHeight*2;
+	canvas.width = canvas.offsetWidth * 2;
+	canvas.height = canvas.offsetHeight * 2;
 
 	var ctx = canvas.getContext("2d");
 
@@ -65,14 +65,14 @@ function clockDraw(el, now, time) {
 
 	var remainingStartAngle = 0;
 	var remainingEndAngle = 0;
-	
+
 	var diffMins;
-	if(time.getHours() > now.getHours() || now.getHours() === time.getHours() && time.getMinutes() >= now.getMinutes())
+	if (time.getHours() > now.getHours() || now.getHours() === time.getHours() && time.getMinutes() >= now.getMinutes())
 		diffMins = (time.getHours() - now.getHours() - 1) * 60 + time.getMinutes() + (60 - now.getMinutes());
 	else
 		diffMins = (time.getHours() + (24 - now.getHours()) - 1) * 60 + time.getMinutes() + (60 - now.getMinutes());
-	
-	if(diffMins < 60*12) {
+
+	if (diffMins < 60 * 12) {
 		if (diffMins < 60) {
 			// Showing minutes
 			remainingStartAngle = -clockGetAngleFromMinutes(now.getMinutes());
@@ -132,11 +132,18 @@ jQuery.fn.extend({
 		var el = $(this[0]);
 		var now = new Date();
 
-		clockDraw(el, now, time);
 
-		$(window).resize(function () {
+		$(window).on('resize', function (e) {
 			clockDraw(el, now, time);
 		});
+		
+		clockDraw(el, now, time);
+		setTimeout(function() {
+			clockDraw(el, now, time);
+			setInterval(function () {
+				clockDraw(el, now, time);
+			}, 60000);
+		}, 1000*(60 - (new Date()).getSeconds()));
 
 		return this;
 	}

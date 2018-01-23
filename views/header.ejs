@@ -8,20 +8,25 @@
 	<meta name="mobile-web-app-capable" content="yes">
 
 	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto' />
-	<link rel='stylesheet' href='/stylesheets/bootstrap-reboot.min.css' />
-	<link rel="stylesheet" href="/stylesheets/simplebar.min.css" />
+	<link rel='stylesheet' href='/stylesheets/external/bootstrap-reboot.min.css' />
+	<link rel="stylesheet" href="/stylesheets/external/simplebar.min.css" />
 
-	<script src="/scripts/jquery.min.js"></script>
-	<script src="/scripts/jquery.color.min.js"></script>
-	<script src="/scripts/autosize.min.js"></script>
-	<script src="/scripts/simplebar.min.js"></script>
-	<script src="/scripts/screenfull.min.js"></script>
-	<script src="/scripts/hammer.min.js"></script>
+	<script src="/scripts/external/jquery.min.js"></script>
+	<script src="/scripts/external/jquery.color.min.js"></script>
+	<script src="/scripts/external/autosize.min.js"></script>
+	<script src="/scripts/external/simplebar.min.js"></script>
+	<script src="/scripts/external/screenfull.min.js"></script>
+	<script src="/scripts/external/hammer.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5YCt6zUjynohzf7RsXKa2B0qvDCeEh3A"></script>
-	<script src="/scripts/gmaps.min.js"></script>
+	<script src="/scripts/external/gmaps.min.js"></script>
 	
 	<link rel='stylesheet' href='/stylesheets/style.css' />
+	
+	<script src="/scripts/chat.js"></script>
+	<script src="/scripts/design.js"></script>
+	<script src="/scripts/card.js"></script>	
 	<script src="/scripts/clock.js"></script>
+	<script src="/scripts/geocoding.js"></script>
 	<script src="/scripts/main.js"></script>
 </head>
 
@@ -42,23 +47,10 @@
 					<img src="/users/anonym/avatar.jpg">
 					<div id="username">Anonymous</div>
 				</div>
-				<hr />
+				<hr />				
 				<ul>
-					<!-- 
-					<a href="#" class="nostyle">
-						<li><img src="/images/aside/login.png">
-							<div>Login</div>
-						</li>
-					</a>
-					<a href="#" class="nostyle">
-						<li><img src="/images/aside/signup.png">
-							<div>Sign up</div>
-						</li>
-					</a>
-				-->
 				<a href="#" class="nostyle"><li><img src="/images/aside/account.png"><div>Account settings</div></li></a>
-				<a href="#" class="nostyle"><li><img src="/images/aside/logout.png"><div>Logout</div></li></a>
-				
+				<a href="#" class="nostyle"><li><img src="/images/aside/logout.png"><div>Logout</div></li></a>				
 				</ul>
 				<hr />
 				<ul>
