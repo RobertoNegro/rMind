@@ -15,6 +15,7 @@
     "express": "~4.15.5",
     "jsonwebtoken": "^8.1.0",
     "mongoose": "^5.0.0-rc0",
+    "mongoose-double": "0.0.1",
     "morgan": "~1.9.0",
     "node-sass-middleware": "0.9.8",
     "serve-favicon": "~2.4.5"
