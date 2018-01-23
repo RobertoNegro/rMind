@@ -12,12 +12,12 @@ router.use(bodyParser.urlencoded({
 router.use(bodyParser.json());
 
 router.get('/', middlewares.verifyToken, function (req, res) {
-	var message = req.params.message;
+	var message = req.body.message;
 	
 	var body = JSON.stringify({
 		lang: 'en',
 		query: message,
-		sessionId: req.userId
+		sessionId: req.headers['x-access-token']
 	});
 
 	var options = {
@@ -38,6 +38,8 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 	function callback(error, response, body) {
 		if (!error && response.statusCode == 200) {
 			res.status(200).send(body);
+		} else {
+			 	res.status(500).send({ error: true, message: 'Something failed in DialogFlow', inner: error });
 		}
 	}
 
@@ -46,20 +48,19 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 
 router.post('/', function (req, res) {
 	jwt.verify(req.body.sessionId, constants.tokenSecret, function(err, decoded) {
-    if (err)
+    if (err) 
     	return res.status(500).send({ error: true, message: 'Failed to authenticate token.' });
 
     var userId = decoded.id;
 		var action = req.body.result.action;
 		var parameters = req.body.result.parameters;
 		
-		debug("User ID: ");
-		debug(userId);
-		debug("Action: ");    
-		debug(action);
-		debug("Parameters: ");
-		debug(parameters);
-		
+		console.log("User ID: ");
+		console.log(userId);
+		console.log("Action: ");    
+		console.log(action);
+		console.log("Parameters: ");
+		console.log(parameters);
 		
 		var text = 'this is a reply for '+userId;
 		res.status(200).send({
