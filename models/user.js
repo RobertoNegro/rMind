@@ -73,8 +73,7 @@ function hash(password, callback) {
 
 userSchema.statics.hash = hash;
 
-// TODO: AVATAR
-userSchema.statics.signup = function (email, username, password, avatar, callback) {
+userSchema.statics.signup = function (email, username, password, callback) {
 	email = email.toLowerCase();
 
 	hash(password, function (err, hashedPassword) {
@@ -84,19 +83,15 @@ userSchema.statics.signup = function (email, username, password, avatar, callbac
 		user.create({
 				username: username,
 				email: email,
-				password: hashedPassword,
-				avatar: avatar
+				password: hashedPassword
 			},
 			function (err, u) {
 				if (err) return callback(err, null);
 				if (!u) return callback(null, null);
 
-				user.authenticate(email, password, function (err, token) {
-					if (err) return callback(err, null);
-					if (!token) return callback(null, null);
-
-					return callback(null, token);
-				});
+				u['memos'] = undefined;
+				u['password'] = undefined;
+				return callback(null, u);
 			});
 	});
 }
@@ -122,6 +117,7 @@ userSchema.statics.authenticate = function (email, password, callback) {
 					expiresIn: 86400
 				});
 
+				u['memos'] = undefined;
 				u['password'] = undefined;
 
 				return callback(null, {

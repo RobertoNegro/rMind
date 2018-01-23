@@ -2,6 +2,11 @@ var debug = require('debug')('rmind:profile');
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
+var formidable = require('formidable');
+var fs = require('fs');
+var util = require('util');
+var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
 
 router.use(bodyParser.urlencoded({
 	extended: true
@@ -77,7 +82,79 @@ router.get('/:id', function (req, res) {
 	});
 });
 
-function editUser(req, res, email, username, password, avatar) {
+function checkPreviousAvatar(id, email, username, password, avatar, res) {
+	if (avatar && avatar.type.indexOf('image/', 0) === 0) {
+		user.findById(id, function (err, u) {
+			if (err)
+				return res.status(500).send({
+					error: true,
+					message: "There was a problem finding the user.",
+					internal: err.message
+				});
+			if (!u)
+				return res.status(404).send({
+					error: true,
+					message: "No user found."
+				});
+
+			if (u['avatar']) {
+				var file = __dirname + '/../public/users/' + id + '/' + u['avatar'];
+				fs.unlink(file, function (err) {
+					if (err && err.code != 'ENOENT')
+						return res.status(500).send({
+							error: true,
+							message: "There was a problem removing previous avatar file.",
+							internal: err.message
+						});
+					return saveNewAvatar(id, email, username, password, avatar, res);
+				})
+			} else {
+				return saveNewAvatar(id, email, username, password, avatar, res);
+			}
+		});
+	} else {
+		return saveNewAvatar(id, email, username, password, avatar, res);
+	}
+}
+
+function saveNewAvatar(id, email, username, password, avatar, res) {
+	var filename;
+
+	if (avatar && avatar.type.indexOf('image/', 0) === 0) {
+		var oldpath = avatar.path;
+
+		var re = /(?:\.([^.]+))?$/;
+		var ext = re.exec(avatar.name)[1];
+		filename = 'avatar_' + avatar.hash + '.' + ext;
+		var dir = __dirname + '/../public/users/' + id;
+
+		mkdirp(dir, function (err) {
+			if (err)
+				return res.status(500).send({
+					error: true,
+					message: "There was a problem creating directories.",
+					internal: err.message
+				});
+
+			var newpath = dir + '/' + filename;
+
+			fs.rename(oldpath, newpath, function (err) {
+				if (err)
+					return res.status(500).send({
+						error: true,
+						message: "There was a problem saving the avatar.",
+						internal: err.message
+					});
+
+				return editUser(id, email, username, password, filename, res);
+			});
+		});
+	} else {
+		return editUser(id, email, username, password, filename, res);
+	}
+}
+
+function editUser(id, email, username, password, avatarPath, res) {
 	var update = {};
 	update['$set'] = {};
 	if (email)
@@ -86,13 +163,13 @@ function editUser(req, res, email, username, password, avatar) {
 		update['$set']['username'] = username;
 	if (password)
 		update['$set']['password'] = password;
-	if (avatar)
-		update['$set']['avatar'] = avatar;
+	if (avatarPath)
+		update['$set']['avatar'] = avatarPath;
 
 	debug("[UPDATING USER]");
 	debug(update);
 
-	user.findByIdAndUpdate(req.userId, update, {
+	user.findByIdAndUpdate(id, update, {
 		new: true
 	}, function (err, u) {
 		if (err)
@@ -106,61 +183,150 @@ function editUser(req, res, email, username, password, avatar) {
 				error: true,
 				message: "No user found."
 			});
+
+		u['password'] = undefined;
+		u['memos'] = undefined;
 		res.status(200).send(u);
 	});
 }
 
 // Edit user
 router.put('/', verifyToken, function (req, res) {
-	var email = req.body.email;
-	var username = req.body.username;
-	var password = req.body.password;
-	var avatar = req.body.avatar;
+	var form = new formidable.IncomingForm();
+	form.hash = 'md5';
+	form.parse(req, function (err, fields, files) {
+		if (err)
+			return res.status(500).send({
+				error: true,
+				message: "There was a problem parsing the request",
+				internal: err.message
+			});
 
-	if(password) {
-		return user.hash(password, function(err, hashedPassword) {
-			if(err) {
-				return res.status(500).send({
-					error: true,
-					message: "There was a problem hashing the password.",
-					internal: err.message
-				});
-			}
+		var id = req.userId;
+		var email = fields.email;
+		var username = fields.username;
+		var password = fields.password;
+		var avatar = files.avatar;
 
-			editUser(req, res, email, username, hashedPassword, avatar);
-		});
-	} else {
-		editUser(req, res, email, username, password, avatar);
-	}
+		if (password) {
+			return user.hash(password, function (err, hashedPassword) {
+				if (err) {
+					return res.status(500).send({
+						error: true,
+						message: "There was a problem hashing the password.",
+						internal: err.message
+					});
+				}
+
+				checkPreviousAvatar(req.userId, email, username, hashedPassword, avatar, res);
+			});
+		} else {
+			checkPreviousAvatar(req.userId, email, username, password, avatar, res);
+		}
+	});
 });
 
 // Add user
 router.post('/', function (req, res) {
-	// TODO: AGGIUNTA AVATAR
+	var form = new formidable.IncomingForm();
+	form.hash = 'md5';
+	form.parse(req, function (err, fields, files) {
+		if (err)
+			return res.status(500).send({
+				error: true,
+				message: "There was a problem parsing the request",
+				internal: err.message
+			});
+		var email = fields.email;
+		var username = fields.username;
+		var password = fields.password;
 
-	if (req.body.email && req.body.username && req.body.password) {
-		user.signup(req.body.email, req.body.username, req.body.password, req.body.avatar, function (err, token) {
-			if (err)
-				return res.status(500).send({
-					error: true,
-					message: "There was a problem creating the user",
-					internal: err.message
-				});
+		if (email && username && password) {
+			user.signup(email, username, password, function (err, u) {
+				if (err)
+					return res.status(500).send({
+						error: true,
+						message: "There was a problem creating the user",
+						internal: err.message
+					});
 
-			if (!token)
-				return res.status(401).send({
-					error: true,
-					message: 'Can\'t obtain token'
-				});
+				if (!u)
+					return res.status(401).send({
+						error: true,
+						message: 'Can\'t obtain user'
+					});
 
-			res.status(200).send(token);
-		});
-	} else {
-		res.status(400).send({
-			error: true,
-			message: "Missing parameters"
-		});
-	}
+				var id = u._id;
+
+				if (files.avatar.type.indexOf('image/', 0) === 0) {
+					var oldpath = files.avatar.path;
+
+					var re = /(?:\.([^.]+))?$/;
+					var ext = re.exec(files.avatar.name)[1];
+					var filename = 'avatar_' + files.avatar.hash + '.' + ext;
+					var dir = __dirname + '/../public/users/' + id;
+
+					rimraf(dir, function (err) {
+						if (err && err.code != 'ENOENT')
+								return res.status(500).send({
+									error: true,
+									message: "There was a problem removing previous directory.",
+									internal: err.message
+								});
+
+						mkdirp(dir, function (err) {
+							if (err)
+								return res.status(500).send({
+									error: true,
+									message: "There was a problem creating directories.",
+									internal: err.message
+								});
+
+							var newpath = dir + '/' + filename;
+
+							fs.rename(oldpath, newpath, function (err) {
+								if (err)
+									return res.status(500).send({
+										error: true,
+										message: "There was a problem saving the avatar.",
+										internal: err.message
+									});
+
+								user.findByIdAndUpdate(id, {
+									$set: {
+										avatar: filename
+									}
+								}, {
+									new: true
+								}, function (err, u) {
+									if (err)
+										return res.status(500).send({
+											error: true,
+											message: "There was a problem updating the user.",
+											internal: err.message
+										});
+									if (!u)
+										return res.status(404).send({
+											error: true,
+											message: "No user found."
+										});
+
+									// TODO: Ritornare token (in questo modo viene anche filtrato l'output grazie ad authenticate)
+									res.status(200).send(u);
+								});
+							});
+						});
+					});
+				} else
+					res.status(200).send(u);
+			});
+		} else {
+			res.status(400).send({
+				error: true,
+				message: "Missing parameters"
+			});
+		}
+	});
 });
 
 // Delete user
@@ -182,7 +348,7 @@ router.delete('/', verifyToken, function (req, res) {
 		}
 
 		return res.status(200).send({
-				error: false
+			error: false
 		});
 	});
 });
