@@ -13,7 +13,7 @@ $aside-color: #553034;
 $float-button-size: 3rem;
 
 $indicators-size: .7rem;
-$indicators-anim-duration: .6s;
+$indicators-anim-duration: .3s;
 
 @media screen and (max-width:950px) {
 	aside {
@@ -36,10 +36,12 @@ $indicators-anim-duration: .6s;
 
 @keyframes indicatorsAnim {
 	0% {
-		transform: translate3d(0, -$indicators-size/4, 0);
+		opacity: 0.4;
+		transform: translate3d(0, -$indicators-size/2, 0);
 	}
 	100% {
-		transform: translate3d(0, +$indicators-size/4, 0);
+		opacity: 1;
+		transform: translate3d(0, +$indicators-size/2, 0);
 	}
 }
 

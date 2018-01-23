@@ -3,14 +3,16 @@
     width: 80% !important;
     max-width: none !important; }
   #body_wrapper.aside_open {
-    transform: translate3d(80%, 0, 0) !important; }
+    transform: translate3d(50%, 0, 0) !important; }
   nav.aside_open {
-    transform: translate3d(80%, 0, 0) !important; } }
+    transform: translate3d(50%, 0, 0) !important; } }
 
 @keyframes indicatorsAnim {
   0% {
+    opacity: 0.4;
     transform: translate3d(0, -0.175rem, 0); }
   100% {
+    opacity: 1;
     transform: translate3d(0, 0.175rem, 0); } }
 
 html {
@@ -324,7 +326,7 @@ nav {
         #body_wrapper #chat_scroller #chat_container #thinking_indicators .indicator {
           position: relative;
           animation-name: indicatorsAnim;
-          animation-duration: 0.6s;
+          animation-duration: 0.3s;
           animation-iteration-count: infinite;
           animation-direction: alternate;
           animation-timing-function: ease-in-out;
@@ -336,9 +338,9 @@ nav {
           #body_wrapper #chat_scroller #chat_container #thinking_indicators .indicator:nth-child(1) {
             animation-delay: -0s; }
           #body_wrapper #chat_scroller #chat_container #thinking_indicators .indicator:nth-child(2) {
-            animation-delay: -0.2s; }
+            animation-delay: -0.1s; }
           #body_wrapper #chat_scroller #chat_container #thinking_indicators .indicator:nth-child(3) {
-            animation-delay: -0.4s; }
+            animation-delay: -0.2s; }
   #body_wrapper #message_container {
     position: relative;
     display: flex;

@@ -1,6 +1,10 @@
 var hasToResetFullscreen = false;
 var scrollbar;
 
+function isThinking(value) {
+	$('#thinking_indicators').toggleClass('show', value);
+}
+
 function openAside() {
 	$('aside').toggleClass('aside_open', true);
 	$('#body_wrapper').toggleClass('aside_open', true);
@@ -98,4 +102,6 @@ $(document).ready(function () {
         refreshSendVoiceButtons();
    });
 	refreshSendVoiceButtons();
+	
+	isThinking(true);
 });
