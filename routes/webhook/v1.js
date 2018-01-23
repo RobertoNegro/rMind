@@ -87,29 +87,34 @@ router.post('/', function (req, res) {
 		var userId = decoded.id;
 		var action = req.body.result.action;
 		var parameters = req.body.result.parameters;
-
+		
+		
 		switch (action) {
 			case 'reminders.add':
-
+				var url = constants.rMindURL + 'api/memos';
 				request({
-					url: constants.dialogFlowURL,
+					url: url,
 					method: "POST",
 					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
+						'Content-Type': 'application/json',
 						'x-access-token': token
 					},
-					body: {
+					body: JSON.stringify({
 						date: parameters['date-time'],
 						text: parameters['name']
-					}
+					})
 				}, function(error, response, body) {
 					if (!error && response.statusCode == 200) {
+						console.log(error);
+						console.log(response.statusCode);
+						
 						var text = 'Done!';
 						res.status(200).send({
 							'speech': text,
 							'displayText': text
 						});
 					} else {
+						console.log(error);
 						res.status(500).send({
 							error: true,
 							message: 'Bad api request.',
@@ -117,7 +122,45 @@ router.post('/', function (req, res) {
 						});
 					}
 				});
-
+				break;
+				
+				case 'reminders.get':
+				case 'reminders.get.past':
+				
+				var url = constants.rMindURL + 'api/memos';
+				request({
+					url: url,
+					method: "GET",
+					headers: {
+						'x-access-token': token
+					}
+				}, function(error, response, body) {
+					if (!error && response.statusCode == 200) {
+						var text = 'Done!';
+						
+						res.status(200).send({
+							'speech': text,
+							'displayText': text,
+							'data' : body
+						});
+					} else {
+						console.log(error);
+						res.status(500).send({
+							error: true,
+							message: 'Bad api request.',
+							inner: error							
+						});
+					}
+				});
+				break;
+				
+				case 'reminders.remove':
+				break;
+				
+				case 'reminders.rename':
+				break;
+				
+				case 'reminders.reschedule':
 				break;
 		}
 
