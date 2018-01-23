@@ -130,14 +130,21 @@ a {
 	&.nostyle:active,
 	&.nostyle:focus,
 	&.nostyle:active:hover {
-		text-decoration: none;
-		color: inherit;
-		outline: 0;
+		text-decoration: none !important;
+		color: inherit !important;
+		outline: 0 !important;
 
 		img {
-			border: 0 none;
-			outline: 0;
+			border: 0 none !important;
+			outline: 0 !important;
 		}
+	}
+		
+	transition:color 0.25s ease-in;
+	color: $header-color;
+	&:hover{
+		transition:color 0.15s ease-out;
+		color: $aside-color;
 	}
 }
 
