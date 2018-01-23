@@ -5,57 +5,33 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
+var routes = require('./config/routes');
+var constants = require('./config/constants');
 
-var db = require('./db');
+// Database initialization
+var db = require('mongoose');
+db.connect(constants.dbUrl);
+// --
 
-var index = require('./routes/index');
-var auth = require('./routes/api/auth');
-var memos = require('./routes/api/memos');
-var profile = require('./routes/api/profile');
-
+// App initialization
 var app = express();
-
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+	extended: false
+}));
 app.use(cookieParser());
 app.use(sassMiddleware({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
-  indentedSyntax: false,
-  sourceMap: true
+	src: path.join(__dirname, 'public'),
+	dest: path.join(__dirname, 'public'),
+	indentedSyntax: false,
+	sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-// routes
-app.use('/', index);
-
-// api routes
-app.use('/api/auth', auth);
-app.use('/api/memos', memos);
-app.use('/api/profile', profile);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use('/', routes);
+// --
 
 module.exports = app;

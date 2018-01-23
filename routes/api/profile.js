@@ -1,6 +1,5 @@
 var debug = require('debug')('rmind:profile');
 var express = require('express');
-var router = express.Router();
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var fs = require('fs');
@@ -8,13 +7,14 @@ var util = require('util');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 
+var user = require('../../models/user');
+var middlewares = require('../../config/middlewares');
+
+var router = express.Router();
 router.use(bodyParser.urlencoded({
 	extended: true
 }));
 router.use(bodyParser.json());
-
-var user = require('../../models/user');
-var verifyToken = require('../../mid/token');
 
 // Browse Users
 router.get('/', function (req, res) {
@@ -39,7 +39,7 @@ router.get('/', function (req, res) {
 });
 
 // Read logged user
-router.get('/me', verifyToken, function (req, res) {
+router.get('/me', middlewares.verifyToken, function (req, res) {
 	user.findById(req.userId, {
 		password: 0,
 		memos: 0
@@ -191,7 +191,7 @@ function editUser(id, email, username, password, avatarPath, res) {
 }
 
 // Edit user
-router.put('/', verifyToken, function (req, res) {
+router.put('/', middlewares.verifyToken, function (req, res) {
 	var form = new formidable.IncomingForm();
 	form.hash = 'md5';
 	form.parse(req, function (err, fields, files) {
@@ -358,7 +358,7 @@ router.post('/', function (req, res) {
 });
 
 // Delete user
-router.delete('/', verifyToken, function (req, res) {
+router.delete('/', middlewares.verifyToken, function (req, res) {
 	user.findByIdAndRemove(req.userId, function (err, u) {
 		if (err) {
 			return res.status(500).send({

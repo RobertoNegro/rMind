@@ -1,18 +1,18 @@
 var debug = require('debug')('rmind:memos');
 var express = require('express');
-var router = express.Router();
 var bodyParser = require('body-parser');
 
+var user = require('../../models/user');
+var middlewares = require('../../config/middlewares');
+
+var router = express.Router();
 router.use(bodyParser.urlencoded({
 	extended: true
 }));
 router.use(bodyParser.json());
 
-var user = require('../../models/user');
-var verifyToken = require('../../mid/token');
-
 // CREATE
-router.post('/', verifyToken, function (req, res) {
+router.post('/', middlewares.verifyToken, function (req, res) {
 	var memo = {
 		date: new Date(req.body.date),
 		text: req.body.text
@@ -45,7 +45,7 @@ router.post('/', verifyToken, function (req, res) {
 });
 
 // READ
-router.get('/', verifyToken, function (req, res) {
+router.get('/', middlewares.verifyToken, function (req, res) {
 	user.findById(req.userId, {
 		password: 0
 	}, function (err, u) {
@@ -69,7 +69,7 @@ router.get('/', verifyToken, function (req, res) {
 });
 
 // UPDATE
-router.put('/:id', verifyToken, function (req, res) {
+router.put('/:id', middlewares.verifyToken, function (req, res) {
 	var tokenId = req.userId;
 	var id = req.params.id;
 
@@ -116,7 +116,7 @@ router.put('/:id', verifyToken, function (req, res) {
 });
 
 // DELETE
-router.delete('/:id', verifyToken, function (req, res) {
+router.delete('/:id', middlewares.verifyToken, function (req, res) {
 	var tokenId = req.userId;
 	var id = req.params.id;
 

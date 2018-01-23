@@ -1,14 +1,13 @@
 var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
 
+var bodyParser = require('body-parser');
+var user = require('../../models/user');
+
+var router = express.Router();
 router.use(bodyParser.urlencoded({
 	extended: true
 }));
 router.use(bodyParser.json());
-
-var config = require('../../config');
-var user = require('../../models/user');
 
 router.get('/', function (req, res) {
 	user.authenticate(req.body.email, req.body.password, function (err, token) {
