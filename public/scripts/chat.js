@@ -1,4 +1,5 @@
 var scrollbar;
+var waitingResponses = 0;
 
 function prepareScrollbar() {
 	scrollbar = (new SimpleBar($('#chat_scroller')[0])).getScrollElement();
@@ -45,9 +46,9 @@ function refreshSendVoiceButtons() {
 function addMessage(text, type) {
 	var el = $('<div class="message ' + type + ' hide">' + text + '</div>').appendTo('#chat_messages');
 	el.css('transform');
-	
+
 	el.toggleClass('hide', false);
-	
+
 	scrollToBottom();
 }
 
@@ -65,6 +66,20 @@ function sendMessage() {
 
 	autosize.update($('#message_input').get(0));
 	addSendMessage(text.replace(/\r/g, '').replace(/\n/g, '<br/>'));
-
+	
+	waitingResponses++;
 	isThinking(true);
+
+	var url = "../webhook?message="+text;
+	$.get({
+		url: url,
+		success: function (result, status) {
+			addRecvMessage(result.result.fulfillment.speech);
+			waitingResponses--;
+			if(waitingResponses <= 0) {
+				isThinking(false);
+				waitingResponses = 0;
+			}
+		}
+	});
 }

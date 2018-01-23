@@ -15,11 +15,16 @@ router.use(bodyParser.json());
 router.post('/', middlewares.verifyToken, function (req, res) {
 	console.log("Creating memo");
 	
+	var dateS = req.body.date;
+	var date = new Date(dateS);
+	
+	if(dateS.indexOf('T') < 0)
+		date.setHours(12);
+	
 	var memo = {
-		date: new Date(req.body.date),
+		date: date,
 		text: req.body.text
 	};
-	console.log(memo);
 	
 	user.findByIdAndUpdate(req.userId, {
 		$push: {
@@ -69,17 +74,19 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 		
 		var memos = u.memos;
 		if(req.body.text) {
-			for(var i = 0, len = u.memos.length; i < len; i++) {
+			for(var i = 0; i < memos.length; i++) {
 				if(memos[i].text.toLowerCase().indexOf(req.body.text.trim().toLowerCase()) < 0) {
-					memos.splice(i, 1);
+					memos.splice(i--, 1);
 				}
 			}
 		}
+		
 		if(req.body.date) {
 			var dateS = req.body.date;
+			
 			if(dateS.indexOf('T') > 0) {
 				var date = new Date(dateS);
-				for(var i = 0, len = u.memos.length; i < len; i++) {
+				for(var i = 0; i < memos.length; i++) {
 					if(memos[i].date.getFullYear() === date.getFullYear() && 
     				memos[i].date.getMonth() === date.getMonth() && 
     				memos[i].date.getDate() === date.getDate() && 
@@ -87,30 +94,30 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 						memos[i].date.getHours() <= (date.getHours() < 23 ? date.getHours() + 1 : 23)) {
 						// its ok
 					} else 						
-						memos.splice(i, 1);
+						memos.splice(i--, 1);
 				}
 			} else if(dateS.indexOf('/') > 0) {
 				var dateStart = new Date(dateS.substring(0, dateS.indexOf('/')));
 				var dateEnd = new Date(dateS.substring(dateS.indexOf('/')+1));
 				dateEnd.setHours(dateEnd.getHours() + 24);
 				
-				for(var i = 0, len = u.memos.length; i < len; i++) {
+				for(var i = 0; i < memos.length; i++) {
 					if(memos[i].date < dateStart || memos[i].date > dateEnd)				
-						memos.splice(i, 1);
+						memos.splice(i--, 1);
 				}
 			} else {
 				var dateStart = new Date(dateS);
 				var dateEnd = new Date(dateS);
 				dateEnd.setHours(dateEnd.getHours() + 24);
 				
-				for(var i = 0, len = u.memos.length; i < len; i++) {
+				for(var i = 0; i < memos.length; i++) {
 					if(memos[i].date < dateStart || memos[i].date > dateEnd)				
-						memos.splice(i, 1);
+						memos.splice(i--, 1);
 				}
 			}						
 		}
 
-		res.status(200).send(u.memos);
+		res.status(200).send(memos);
 	});
 });
 
