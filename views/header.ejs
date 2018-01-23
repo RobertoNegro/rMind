@@ -40,22 +40,47 @@
 			<img id="close_button" onClick="closeAside()" src="/images/close_button.png" />
 		</div>
 		<div id="logo"><img src="/images/full_logo.png" /></div>
-		<div id="avatar"><img onClick="openAside()" src="/users/anonym/avatar.jpg" /></div>
+		<div id="avatar">
+			<% if(user && user.avatar) { %>
+				<img onClick="openAside()" src="<%- user.avatar %>">
+			<% } else { %>
+				<img onClick="openAside()" src="/users/anonym/avatar.jpg">
+			<% } %>
+		</div>
 	</nav>
 
 	<aside>
 		<div id="aside_scroller">
 			<div id="aside_content">
 				<div id="aside_profile">
-					<img src="/users/anonym/avatar.jpg">
-					<div id="username">Anonymous</div>
+					<% if(!logged) { %>
+						<img src="/users/anonym/avatar.jpg">
+						<div id="username">Anonymous</div>
+					<% } else { %>
+						<% if(user && user.avatar) { %>
+						<img src="<%- user.avatar %>">
+						<% } else { %>
+						<img src="/users/anonym/avatar.jpg">
+						<% } %>
+					
+						<% if(user && user.username) { %>
+						<div id="username"><%- user.username %></div>
+						<% } else { %>
+						<div id="username">Anonymous</div>
+						<% } %>
+					
+					<% } %>
 				</div>
 				<hr />				
-				<ul>
-				<a href="#" class="nostyle"><li><img src="/images/aside/account.png"><div>Account settings</div></li></a>
-				<a href="#" class="nostyle"><li><img src="/images/aside/logout.png"><div>Logout</div></li></a>				
-				</ul>
-				<hr />
+				
+				<% if(logged) { %>
+					<ul>
+					<a href="#" class="nostyle"><li><img src="/images/aside/account.png"><div>Account settings</div></li></a>
+					<a href="#" class="nostyle"><li><img src="/images/aside/logout.png"><div>Logout</div></li></a>				
+					</ul>
+					<hr />
+				<% } %>				
+				
 				<ul>
 					<a href="#" class="nostyle">
 						<li><img src="/images/aside/info.png">

@@ -82,78 +82,6 @@ router.get('/:id', function (req, res) {
 	});
 });
 
-function checkPreviousAvatar(id, email, username, password, avatar, res) {
-	if (avatar && avatar.type.indexOf('image/', 0) === 0) {
-		user.findById(id, function (err, u) {
-			if (err)
-				return res.status(500).send({
-					error: true,
-					message: "There was a problem finding the user.",
-					internal: err.message
-				});
-			if (!u)
-				return res.status(404).send({
-					error: true,
-					message: "No user found."
-				});
-
-			if (u['avatar']) {
-				var file = __dirname + '/../public/users/' + id + '/' + u['avatar'];
-				fs.unlink(file, function (err) {
-					if (err && err.code != 'ENOENT')
-						return res.status(500).send({
-							error: true,
-							message: "There was a problem removing previous avatar file.",
-							internal: err.message
-						});
-					return saveNewAvatar(id, email, username, password, avatar, res);
-				})
-			} else {
-				return saveNewAvatar(id, email, username, password, avatar, res);
-			}
-		});
-	} else {
-		return saveNewAvatar(id, email, username, password, avatar, res);
-	}
-}
-
-function saveNewAvatar(id, email, username, password, avatar, res) {
-	var filename;
-
-	if (avatar && avatar.type.indexOf('image/', 0) === 0) {
-		var oldpath = avatar.path;
-
-		var re = /(?:\.([^.]+))?$/;
-		var ext = re.exec(avatar.name)[1];
-		filename = 'avatar_' + avatar.hash + '.' + ext;
-		var dir = __dirname + '/../public/users/' + id;
-
-		mkdirp(dir, function (err) {
-			if (err)
-				return res.status(500).send({
-					error: true,
-					message: "There was a problem creating directories.",
-					internal: err.message
-				});
-
-			var newpath = dir + '/' + filename;
-
-			fs.rename(oldpath, newpath, function (err) {
-				if (err)
-					return res.status(500).send({
-						error: true,
-						message: "There was a problem saving the avatar.",
-						internal: err.message
-					});
-
-				return editUser(id, email, username, password, filename, res);
-			});
-		});
-	} else {
-		return editUser(id, email, username, password, filename, res);
-	}
-}
-
 function editUser(id, email, username, password, avatarPath, res) {
 	var update = {};
 	update['$set'] = {};
@@ -192,150 +120,79 @@ function editUser(id, email, username, password, avatarPath, res) {
 
 // Edit user
 router.put('/', middlewares.verifyToken, function (req, res) {
-	var form = new formidable.IncomingForm();
-	form.hash = 'md5';
-	form.parse(req, function (err, fields, files) {
-		if (err)
-			return res.status(500).send({
-				error: true,
-				message: "There was a problem parsing the request",
-				internal: err.message
-			});
+	var id = req.userId;
+	var email = req.body.email;
+	var username = req.body.username;
+	var password = req.body.password;
+	var avatar = req.body.avatar;
 
-		var id = req.userId;
-		var email = fields.email;
-		var username = fields.username;
-		var password = fields.password;
-		var avatar = files.avatar;
+	if (password) {
+		return user.hash(password, function (err, hashedPassword) {
+			if (err) {
+				return res.status(500).send({
+					error: true,
+					message: "There was a problem hashing the password.",
+					internal: err.message
+				});
+			}
 
-		if (password) {
-			return user.hash(password, function (err, hashedPassword) {
-				if (err) {
-					return res.status(500).send({
-						error: true,
-						message: "There was a problem hashing the password.",
-						internal: err.message
-					});
-				}
-
-				checkPreviousAvatar(req.userId, email, username, hashedPassword, avatar, res);
-			});
-		} else {
-			checkPreviousAvatar(req.userId, email, username, password, avatar, res);
-		}
-	});
+			editUser(id, email, username, hashedPassword, avatar, res);
+		});
+	} else {
+		editUser(id, email, username, password, avatar, res);
+	}
 });
 
 // Add user
 router.post('/', function (req, res) {
-	var form = new formidable.IncomingForm();
-	form.hash = 'md5';
-	form.parse(req, function (err, fields, files) {
-		if (err)
-			return res.status(500).send({
-				error: true,
-				message: "There was a problem parsing the request",
-				internal: err.message
-			});
-		var email = fields.email;
-		var username = fields.username;
-		var password = fields.password;
+	var email = req.body.email;
+	var username = req.body.username;
+	var password = req.body.password;
 
-		if (email && username && password) {
-			user.signup(email, username, password, function (err, u) {
-				if (err)
-					return res.status(500).send({
-						error: true,
-						message: "There was a problem creating the user",
-						internal: err.message
-					});
+	if (email && username && password) {
+		user.signup(email, username, password, function (err, u) {
+			if (err)
+				return res.status(500).send({
+					error: true,
+					message: "There was a problem creating the user",
+					internal: err.message
+				});
 
-				if (!u)
-					return res.status(401).send({
-						error: true,
-						message: 'Can\'t obtain user'
-					});
+			if (!u)
+				return res.status(401).send({
+					error: true,
+					message: 'Can\'t obtain user'
+				});
 
-				var id = u._id;
+			var id = u._id;
 
-				if (files.avatar.type.indexOf('image/', 0) === 0) {
-					var oldpath = files.avatar.path;
-
-					var re = /(?:\.([^.]+))?$/;
-					var ext = re.exec(files.avatar.name)[1];
-					var filename = 'avatar_' + files.avatar.hash + '.' + ext;
-					var dir = __dirname + '/../public/users/' + id;
-
-					rimraf(dir, function (err) {
-						if (err && err.code != 'ENOENT')
-							return res.status(500).send({
-								error: true,
-								message: "There was a problem removing previous directory.",
-								internal: err.message
-							});
-
-						mkdirp(dir, function (err) {
-							if (err)
-								return res.status(500).send({
-									error: true,
-									message: "There was a problem creating directories.",
-									internal: err.message
-								});
-
-							var newpath = dir + '/' + filename;
-
-							fs.rename(oldpath, newpath, function (err) {
-								if (err)
-									return res.status(500).send({
-										error: true,
-										message: "There was a problem saving the avatar.",
-										internal: err.message
-									});
-
-								user.findByIdAndUpdate(id, {
-									$set: {
-										avatar: filename
-									}
-								}, {
-									new: true
-								}, function (err, u) {
-									if (err)
-										return res.status(500).send({
-											error: true,
-											message: "There was a problem updating the user.",
-											internal: err.message
-										});
-									if (!u)
-										return res.status(404).send({
-											error: true,
-											message: "No user found."
-										});
-
-									user.authenticate(email, password, function (err, token) {
-										if (err)
-											return res.status(500).send({
-												error: true,
-												message: "There was a problem updating the user.",
-												internal: err.message
-											});
-										if (!u)
-											return res.status(404).send({
-												error: true,
-												message: "No user found."
-											});
-
-										res.status(200).send(token);
-									});
-								});
-							});
+			if (req.body.avatar) {
+				var avatar = req.body.avatar;
+				
+				user.findByIdAndUpdate(id, {
+					$set: {
+						avatar: avatar
+					}
+				}, {
+					new: true
+				}, function (err, u) {
+					if (err)
+						return res.status(500).send({
+							error: true,
+							message: "There was a problem setting the user avatar.",
+							internal: err.message
 						});
-					});
-				} else {
+					if (!u)
+						return res.status(404).send({
+							error: true,
+							message: "No user found."
+						});
+
 					user.authenticate(email, password, function (err, token) {
 						if (err)
 							return res.status(500).send({
 								error: true,
-								message: "There was a problem updating the user.",
+								message: "There was a problem authenticating the user.",
 								internal: err.message
 							});
 						if (!u)
@@ -346,15 +203,31 @@ router.post('/', function (req, res) {
 
 						res.status(200).send(token);
 					});
-				}
-			});
-		} else {
-			res.status(400).send({
-				error: true,
-				message: "Missing parameters"
-			});
-		}
-	});
+				});
+			} else {
+				user.authenticate(email, password, function (err, token) {
+					if (err)
+						return res.status(500).send({
+							error: true,
+							message: "There was a problem authenticating the user.",
+							internal: err.message
+						});
+					if (!u)
+						return res.status(404).send({
+							error: true,
+							message: "No user found."
+						});
+
+					res.status(200).send(token);
+				});
+			}
+		});
+	} else {
+		res.status(400).send({
+			error: true,
+			message: "Missing parameters"
+		});
+	}
 });
 
 // Delete user
@@ -375,19 +248,10 @@ router.delete('/', middlewares.verifyToken, function (req, res) {
 			});
 		}
 
-		var dir = __dirname + '/../public/users/' + req.userId;
-		rimraf(dir, function (err) {
-			if (err && err.code != 'ENOENT')
-				return res.status(500).send({
-					error: true,
-					message: "There was a problem removing previous directory.",
-					internal: err.message
-				});
-
-			return res.status(200).send({
+		return res.status(200).send({
 				error: false
-			});
-		});
+		});		
+		
 	});
 });
 
