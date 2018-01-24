@@ -136,7 +136,7 @@ function addRecvCard(card) {
 		'<div class="card_container" id="card_' + id + '">' +
 		'<div class="card">' +
 		'<div class="top_right_buttons">' +
-		'<a class="nostyle" href="/card/'+ card._id +'"><img src="/images/settings_button.png" />' +
+		'<a class="nostyle" href="/card/'+ card._id +'"><img src="/images/settings_button.png" /></a>' +
 		'</div>' +
 		'<div class="when">' +
 		'<div class="date">N/A</div>' +
