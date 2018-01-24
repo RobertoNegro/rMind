@@ -123,7 +123,7 @@ router.get('/', middlewares.verifyToken, function (req, res) {
 		var memos = u.memos;
 		if (req.body.text) {
 			for (var i = 0; i < memos.length; i++) {
-				if (memos[i].text.toLowerCase().indexOf(req.body.text.trim().toLowerCase()) < 0) {
+				if (!memos[i].text || memos[i].text.toLowerCase().indexOf(req.body.text.trim().toLowerCase()) < 0) {
 					memos.splice(i--, 1);
 				}
 			}
@@ -158,19 +158,25 @@ router.put('/:id', middlewares.verifyToken, function (req, res) {
 
 	var update = {};
 	
-	update['$set'] = {};
-	if (dateS) 
-		update['$set']['memos.$.date'] = getDate(dateS);
-	if (text)
-		update['$set']['memos.$.text'] = text;
+	if(dateS || text) {
+		update['$set'] = {};
+
+		if (dateS) 
+			update['$set']['memos.$.date'] = getDate(dateS);
+		if (text)
+			update['$set']['memos.$.text'] = text;
+	}
 	
-	update['$push'] = {};
-	if(photo)
-		update['$push']['memos.$.photo'] = photo;
-	if(location)
-		update['$push']['memos.$.location'] = location;
-	if(link)
-		update['$push']['memos.$.link'] = link;	
+	if(photo || location || link) {
+		update['$push'] = {};
+		
+		if(photo)
+			update['$push']['memos.$.photo'] = photo;
+		if(location)
+			update['$push']['memos.$.location'] = location;
+		if(link)
+			update['$push']['memos.$.link'] = link;	
+	}
 	
 	user.findOneAndUpdate({
 		'_id': tokenId,
@@ -189,7 +195,7 @@ router.put('/:id', middlewares.verifyToken, function (req, res) {
 		if (!u) {
 			return res.status(404).send({
 				error: true,
-				message: "No user found."
+				message: "No user or memo found."
 			});
 		}
 
