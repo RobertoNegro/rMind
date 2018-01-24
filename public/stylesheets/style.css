@@ -2,13 +2,15 @@
   aside {
     width: 80% !important;
     max-width: none !important; }
+
   #body_wrapper.aside_open {
     transform: translate3d(80%, 0, 0) !important; }
+
   nav.aside_open {
     transform: translate3d(80%, 0, 0) !important; }
+
   #chat_messages .card_container {
     max-width: 70% !important; } }
-
 @keyframes indicatorsAnim {
   0% {
     opacity: 0.4;
@@ -16,7 +18,6 @@
   100% {
     opacity: 1;
     transform: translate3d(0, 0.35rem, 0); } }
-
 @keyframes cardAnimShow {
   0% {
     transform: scale3d(0.9, 0.9, 1) translate3d(-3rem, 0, 0); }
@@ -24,13 +25,11 @@
     transform: scale3d(0.95, 0.95, 1) translate3d(-100%, 0, 0); }
   100% {
     transform: scale3d(1, 1, 1) translate3d(0, 0, 0); } }
-
 @keyframes cardAnimHide {
   0% {
     transform: scale3d(1, 1, 1) translate3d(0, 0, 0); }
   100% {
     transform: scale3d(0.9, 0.9, 1) translate3d(-3rem, 0, 0); } }
-
 @keyframes subcardAnimShow {
   0% {
     transform: scale3d(0.9, 0.9, 1) translate3d(3rem, 0, 0); }
@@ -38,13 +37,11 @@
     transform: scale3d(0.95, 0.95, 1) translate3d(100%, 0, 0); }
   100% {
     transform: scale3d(1, 1, 1) translate3d(0, 0, 0); } }
-
 @keyframes subcardAnimHide {
   0% {
     transform: scale3d(1, 1, 1) translate3d(0, 0, 0); }
   100% {
     transform: scale3d(0.9, 0.9, 1) translate3d(3rem, 0, 0); } }
-
 html {
   font-size: 100% !important;
   overflow-x: hidden;
@@ -66,13 +63,19 @@ body {
   font-family: 'Roboto', sans-serif;
   padding-top: 4rem; }
 
-a.nostyle, a.nostyle:visited, a.nostyle:hover, a.nostyle:active, a.nostyle:focus, a.nostyle:active:hover {
-  text-decoration: none;
-  color: inherit;
-  outline: 0; }
-  a.nostyle img, a.nostyle:visited img, a.nostyle:hover img, a.nostyle:active img, a.nostyle:focus img, a.nostyle:active:hover img {
-    border: 0 none;
-    outline: 0; }
+a {
+  transition: color 0.25s ease-in;
+  color: #90323d; }
+  a.nostyle, a.nostyle:visited, a.nostyle:hover, a.nostyle:active, a.nostyle:focus, a.nostyle:active:hover {
+    text-decoration: none !important;
+    color: inherit !important;
+    outline: 0 !important; }
+    a.nostyle img, a.nostyle:visited img, a.nostyle:hover img, a.nostyle:active img, a.nostyle:focus img, a.nostyle:active:hover img {
+      border: 0 none !important;
+      outline: 0 !important; }
+  a:hover {
+    transition: color 0.15s ease-out;
+    color: #553034; }
 
 aside {
   z-index: 1003 !important;
@@ -85,7 +88,7 @@ aside {
   width: 35%;
   background-color: #553034;
   color: #fff;
-  transition: width 0.3s ease-in, transform 0.3s ease-in, visibility 0s linear 0.3s;
+  transition: width 0.3s ease-in, transform 0.3s ease-in, visibility 0s linear 0.3s;
   transform: translate3d(-100%, 0, 0); }
   aside .simplebar-track {
     z-index: 1004 !important; }
@@ -191,7 +194,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   align-content: center;
-  padding-left: 1.33333rem;
+  padding-left: 1.3333333333rem;
   padding-right: 0.25rem;
   transition: transform 0.3s ease-in;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
@@ -219,8 +222,8 @@ nav {
     position: relative; }
     nav #left_button #close_button,
     nav #left_button #menu_button {
-      padding-top: 1.33333rem;
-      padding-bottom: 1.33333rem;
+      padding-top: 1.3333333333rem;
+      padding-bottom: 1.3333333333rem;
       position: absolute;
       top: 0;
       left: 0; }
@@ -237,10 +240,10 @@ nav {
     padding-top: 1rem;
     padding-bottom: 1rem; }
   nav #avatar {
-    height: 3.33333rem;
-    width: 3.33333rem;
-    margin-top: 0.33333rem;
-    margin-bottom: 0.33333rem;
+    height: 3.3333333333rem;
+    width: 3.3333333333rem;
+    margin-top: 0.3333333333rem;
+    margin-bottom: 0.3333333333rem;
     overflow: hidden;
     border-radius: 50%;
     background-color: #fff; }
@@ -361,11 +364,11 @@ nav {
             content: '';
             position: absolute;
             top: 100%;
-            width: 0.66667rem;
-            height: 0.66667rem;
+            width: 0.6666666667rem;
+            height: 0.6666666667rem;
             transform-origin: 50% 50%;
             transform: rotate(45deg);
-            margin-top: -0.36364rem;
+            margin-top: -0.3636363636rem;
             box-shadow: 1.75px 1.75px 2px rgba(0, 0, 0, 0.2); }
           #body_wrapper #chat_scroller #chat_container #chat_messages .message.sent {
             background-color: #dbcacc;
@@ -440,12 +443,12 @@ nav {
                 #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .card.hide .hide_overlay {
                   pointer-events: auto;
                   background-color: rgba(195, 188, 189, 0.65);
-                  transition: background-color 0.23333s ease-in 0.35s; }
+                  transition: background-color 0.2333333333s ease-in 0.35s; }
                   #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .card.hide .hide_overlay:hover {
                     cursor: pointer; }
                   #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .card.hide .hide_overlay img {
                     opacity: 1;
-                    transition: background-color 0.23333s ease-in 0.35s; }
+                    transition: background-color 0.2333333333s ease-in 0.35s; }
               #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .card.show {
                 animation-duration: 0.7s;
                 animation-iteration-count: 1;
@@ -532,7 +535,7 @@ nav {
                   height: 2rem;
                   pointer-events: inherit;
                   opacity: 1;
-                  transition: opacity 0.23333s ease-in 0.35s; }
+                  transition: opacity 0.2333333333s ease-in 0.35s; }
               #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .subcard .content_container {
                 position: absolute;
                 top: 0;
@@ -568,7 +571,7 @@ nav {
                     bottom: 0;
                     pointer-events: none;
                     background-color: rgba(195, 188, 189, 0.65);
-                    transition: background-color 0.23333s ease-in 0.35s; }
+                    transition: background-color 0.2333333333s ease-in 0.35s; }
                   #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .subcard .content_container .map.hide,
                   #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .subcard .content_container .picture.hide,
                   #body_wrapper #chat_scroller #chat_container #chat_messages .card_wrapper .card_container .subcard .content_container .link.hide {
@@ -637,7 +640,7 @@ nav {
                 top: 1rem;
                 right: -2rem;
                 bottom: 1rem;
-                transition: opacity 0.23333s ease-in 0.35s;
+                transition: opacity 0.2333333333s ease-in 0.35s;
                 opacity: 0;
                 pointer-events: none;
                 width: 2rem; }
@@ -729,14 +732,14 @@ nav {
         pointer-events: none;
         opacity: 0;
         transition: opacity 0.15s ease-in;
-        padding: 1.33333rem; }
+        padding: 1.3333333333rem; }
         #body_wrapper #message_container #message_button div.show {
           pointer-events: auto;
           opacity: 1;
           transition: opacity 0.15s ease-out; }
         #body_wrapper #message_container #message_button div img {
-          width: 1.33333rem;
-          height: 1.33333rem; }
+          width: 1.3333333333rem;
+          height: 1.3333333333rem; }
         #body_wrapper #message_container #message_button div:hover {
           cursor: pointer; }
 
@@ -777,7 +780,7 @@ nav {
     font-size: 0.7rem;
     font-weight: bold; }
     .calendar .day_names div {
-      width: 14.28571%; }
+      width: 14.2857142857%; }
   .calendar .rows {
     width: 100%;
     height: 70%;
@@ -908,7 +911,12 @@ form {
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   font-size: 1rem;
   border-radius: 0.5rem;
-  padding: 0.5rem; }
+  padding: 0.5rem;
+  margin: 0.5rem; }
+  form hr {
+    height: 1px;
+    border: 0;
+    background-color: rgba(0, 0, 0, 0.06); }
   form .input_row {
     width: 100%;
     display: flex;
@@ -929,12 +937,12 @@ form {
       border-radius: 1rem;
       color: #666;
       font-size: 1rem;
-      padding: 0.66667rem;
+      padding: 0.6666666667rem;
       margin: 0.5rem; }
       form .input_row input::placeholder {
         color: #d6d6d6;
         font-size: 1rem; }
-  form input[type=submit] {
+  form input[type=submit], form button {
     display: block;
     margin: 0.5rem auto;
     color: #fff;
@@ -942,8 +950,12 @@ form {
     border: 0;
     border-radius: 1rem;
     font-size: 1rem;
-    padding: 0.66667rem;
+    padding: 0.6666666667rem;
     cursor: pointer; }
+
+h2 {
+  color: #90323d;
+  text-align: center; }
 
 .gm-style-iw p {
   margin-top: 1rem !important;

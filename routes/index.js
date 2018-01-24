@@ -7,6 +7,8 @@ var constants = require('../config/constants');
 
 router.get('/', function (req, res, next) {
 	var token = middlewares.getToken(req);
+	var isError = req.query.err;
+	
 	if (token) {
 		request.get({
 			url: constants.rMindURL + 'api/profile/me',
@@ -20,7 +22,8 @@ router.get('/', function (req, res, next) {
 				res.render('login', {
 					logged: false,
 					user: null,
-					turnBackButton: false
+					turnBackButton: false,
+					error: isError					
 				});
 			} else {
 				res.render('index', {
@@ -34,7 +37,8 @@ router.get('/', function (req, res, next) {
 		res.render('login', {
 			logged: false,
 			user: null,
-			turnBackButton: false
+			turnBackButton: false,
+			error: isError
 		});
 	}
 });
@@ -52,7 +56,7 @@ router.post('/login', function (req, res) {
 		}
 	}, (err, result, data) => {
 		if (err || result.statusCode !== 200) {
-			res.redirect('/?err');
+			res.redirect('/?err=credentials');
 		} else {
 			res.cookie('token', data.token);
 			res.redirect('/');
