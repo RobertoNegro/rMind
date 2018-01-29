@@ -57,35 +57,39 @@ var userSchema = new mongoose.Schema({
 });
 // --
 
+function validString(str) {
+	var isString = str != null && str != undefined && (typeof str === 'string' || str instanceof String);
+	return isString && (str.trim()).length > 0;
+}
+
 // static functions
-function hash(password, callback) {
-	if (!password)
+function hash(password, callback) {	
+	if (!validString(password))
 		return callback(new Error("No password passed as argument"), null);
 
 	bcrypt.hash(password, 10, function (err, hashedPassword) {
-		if (!hashedPassword)
-			return callback(new Error("Can't generate hashed password"), null);
-
 		return callback(err, hashedPassword);
 	});
 }
 
-function signup(email, username, password, callback) {
+function signup(email, username, password, avatar, callback) {
+	if(!validString(email) || !validString(username) || !validString(password))
+		return callback(new Error("Missing parameters"), null);
+	
 	email = email.toLowerCase();
 
 	hash(password, function (err, hashedPassword) {
-		if (err) return callback(err, null);
-		if (!hashedPassword) return callback(new Error("Error on hashing the password (null password)"), null);
-
-		user.create({
-				username: username,
-				email: email,
-				password: hashedPassword
-			},
+		var newUser = {
+			username: username,
+			email: email,
+			password: hashedPassword
+		};
+		
+		if(avatar) 
+			newUser['avatar'] = avatar;
+		
+		user.create(newUser,
 			function (err, u) {
-				if (err) return callback(err, null);
-				if (!u) return callback(null, null);
-
 				u['memos'] = undefined;
 				u['password'] = undefined;
 				return callback(null, u);
@@ -93,7 +97,59 @@ function signup(email, username, password, callback) {
 	});
 }
 
+function read(id, callback) {
+	if(!validString(id))
+		return callback(new Error("Missing parameters"), null);
+	
+	user.findById(id, {
+		password: 0,
+		memos: 0
+	}, function (err, u) {
+		if (err) return callback(err, null);			
+		return callback(null, u);
+	});
+}
+
+function change(id, email, username, password, avatar, callback) {
+	if(!validString(id))
+		return callback(new Error("Missing parameters"), null);
+	
+	var update = {};
+	update['$set'] = {};
+	if (email)
+		update['$set']['email'] = email;
+	if (username)
+		update['$set']['username'] = username;
+	if (password)
+		update['$set']['password'] = password;
+	if (avatar)
+		update['$set']['avatar'] = avatar;
+	
+	var options = { new: true };
+
+	user.findByIdAndUpdate(id, update, options, function (err, u) {
+		if (err) return callback(err, null);		
+
+		u['memos'] = undefined;
+		u['password'] = undefined;
+		return callback(null, u);
+	});
+}
+
+function remove(id, callback) {
+	if(!validString(id))
+		return callback(new Error("Missing parameters"), null);
+	
+	user.findByIdAndRemove(id, function (err, u) {
+		if (err) return callback(err, null);			
+		return callback(null, u);
+	});
+}
+
 function authenticate(email, password, callback) {
+	if(!validString(email) || !validString(password))
+		return callback(new Error("Missing parameters"), null);
+	
 	email = email.toLowerCase();
 
 	user.findOne({
@@ -101,8 +157,6 @@ function authenticate(email, password, callback) {
 	}, {
 		memos: 0
 	}, function (err, u) {
-		if (err)
-			return callback(err);
 		if (!u)
 			return callback(new Error("Email not recognized"), null);
 
@@ -127,9 +181,14 @@ function authenticate(email, password, callback) {
 	});
 }
 
+userSchema.statics.validString = validString;
 userSchema.statics.hash = hash;
 userSchema.statics.signup = signup;
 userSchema.statics.authenticate = authenticate;
+userSchema.statics.remove = remove;
+userSchema.statics.change = change;
+userSchema.statics.read = read;
+
 // --
 
 var user = mongoose.model('User', userSchema);

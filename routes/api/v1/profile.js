@@ -40,10 +40,7 @@ router.get('/', function (req, res) {
 
 // Read logged user
 router.get('/me', middlewares.verifyToken, function (req, res) {
-	user.findById(req.userId, {
-		password: 0,
-		memos: 0
-	}, function (err, u) {
+	user.read(req.userId, function (err, u) {
 		if (err)
 			return res.status(500).send({
 				error: true,
@@ -82,24 +79,15 @@ router.get('/:id', function (req, res) {
 	});
 });
 
-function editUser(id, email, username, password, avatarPath, res) {
-	var update = {};
-	update['$set'] = {};
-	if (email)
-		update['$set']['email'] = email;
-	if (username)
-		update['$set']['username'] = username;
-	if (password)
-		update['$set']['password'] = password;
-	if (avatarPath)
-		update['$set']['avatar'] = avatarPath;
+// Edit user
+router.put('/', middlewares.verifyToken, function (req, res) {
+	var id = req.userId;
+	var email = req.body.email;
+	var username = req.body.username;
+	var password = req.body.password;
+	var avatar = req.body.avatar;
 
-	debug("[UPDATING USER]");
-	debug(update);
-
-	user.findByIdAndUpdate(id, update, {
-		new: true
-	}, function (err, u) {
+	const callback = function(err, u) {
 		if (err)
 			return res.status(500).send({
 				error: true,
@@ -112,22 +100,11 @@ function editUser(id, email, username, password, avatarPath, res) {
 				message: "No user found."
 			});
 
-		u['password'] = undefined;
-		u['memos'] = undefined;
 		res.status(200).send(u);
-	});
-}
-
-// Edit user
-router.put('/', middlewares.verifyToken, function (req, res) {
-	var id = req.userId;
-	var email = req.body.email;
-	var username = req.body.username;
-	var password = req.body.password;
-	var avatar = req.body.avatar;
-
+	};
+	
 	if (password) {
-		return user.hash(password, function (err, hashedPassword) {
+		user.hash(password, function (err, hashedPassword) {
 			if (err) {
 				return res.status(500).send({
 					error: true,
@@ -136,10 +113,10 @@ router.put('/', middlewares.verifyToken, function (req, res) {
 				});
 			}
 
-			editUser(id, email, username, hashedPassword, avatar, res);
+			user.change(id, email, username, hashedPassword, avatar, callback);
 		});
 	} else {
-		editUser(id, email, username, password, avatar, res);
+		user.change(id, email, username, password, avatar, callback);
 	}
 });
 
@@ -148,9 +125,10 @@ router.post('/', function (req, res) {
 	var email = req.body.email;
 	var username = req.body.username;
 	var password = req.body.password;
+	var avatar = req.body.avatar;				
 
 	if (email && username && password) {
-		user.signup(email, username, password, function (err, u) {
+		user.signup(email, username, password, avatar, function (err, u) {
 			if (err)
 				return res.status(500).send({
 					error: true,
@@ -164,63 +142,21 @@ router.post('/', function (req, res) {
 					message: 'Can\'t obtain user'
 				});
 
-			var id = u._id;
-
-			if (req.body.avatar) {
-				var avatar = req.body.avatar;
-				
-				user.findByIdAndUpdate(id, {
-					$set: {
-						avatar: avatar
-					}
-				}, {
-					new: true
-				}, function (err, u) {
-					if (err)
-						return res.status(500).send({
-							error: true,
-							message: "There was a problem setting the user avatar.",
-							internal: err.message
-						});
-					if (!u)
-						return res.status(404).send({
-							error: true,
-							message: "No user found."
-						});
-
-					user.authenticate(email, password, function (err, token) {
-						if (err)
-							return res.status(500).send({
-								error: true,
-								message: "There was a problem authenticating the user.",
-								internal: err.message
-							});
-						if (!u)
-							return res.status(404).send({
-								error: true,
-								message: "No user found."
-							});
-
-						res.status(200).send(token);
+			user.authenticate(email, password, function (err, token) {
+				if (err)
+					return res.status(500).send({
+						error: true,
+						message: "There was a problem authenticating the user.",
+						internal: err.message
 					});
-				});
-			} else {
-				user.authenticate(email, password, function (err, token) {
-					if (err)
-						return res.status(500).send({
-							error: true,
-							message: "There was a problem authenticating the user.",
-							internal: err.message
-						});
-					if (!u)
-						return res.status(404).send({
-							error: true,
-							message: "No user found."
-						});
+				if (!u)
+					return res.status(404).send({
+						error: true,
+						message: "No user found."
+					});
 
-					res.status(200).send(token);
-				});
-			}
+				res.status(200).send(token);
+			});
 		});
 	} else {
 		res.status(400).send({
@@ -232,7 +168,7 @@ router.post('/', function (req, res) {
 
 // Delete user
 router.delete('/', middlewares.verifyToken, function (req, res) {
-	user.findByIdAndRemove(req.userId, function (err, u) {
+	user.remove(req.userId, function(err, u) {
 		if (err) {
 			return res.status(500).send({
 				error: true,
@@ -240,18 +176,15 @@ router.delete('/', middlewares.verifyToken, function (req, res) {
 				internal: err.message
 			});
 		}
-
 		if (!u) {
 			return res.status(404).send({
 				error: true,
 				message: "No user found."
 			});
 		}
-
 		return res.status(200).send({
 				error: false
-		});		
-		
+		});
 	});
 });
 
